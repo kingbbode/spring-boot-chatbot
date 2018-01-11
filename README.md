@@ -14,7 +14,7 @@ public class FirstBrain {
         return  "말해봐";
     }
 
-    @BrainCell(key = "따라해봐", function = "echo-end", parent = "echo-start")
+    @BrainCell(function = "echo-end", parent = "echo-start")
     public String echo2(BrainRequest brainRequest) {
         return  brainRequest.getContent();
     }
