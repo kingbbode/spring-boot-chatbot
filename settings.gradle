@@ -1,0 +1,10 @@
+rootProject.name = 'spring-boot-starter-chatbot'
+include 'spring-boot-chatbot-core'
+include 'spring-boot-chatbot-autoconfigure'
+include 'messenger:line'
+findProject(':messenger:line')?.name = 'line'
+include 'messenger:teamup'
+findProject(':messenger:teamup')?.name = 'teamup'
+include 'spring-boot-chatbot-line-starter'
+include 'spring-boot-chatbot-teamup-starter'
+
