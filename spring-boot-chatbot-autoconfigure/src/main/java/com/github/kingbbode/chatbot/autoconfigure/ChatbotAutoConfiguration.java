@@ -130,7 +130,7 @@ public class ChatbotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "chatbot", name = "enableBase", havingValue = "true")
+    @ConditionalOnProperty(prefix = "chatbot", name = "enableBase", havingValue = "true", matchIfMissing = true)
     public BaseBrain baseBrain(){
         return new BaseBrain();
     }
