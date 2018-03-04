@@ -42,7 +42,7 @@ public class BrainFactory {
     @Autowired
     private BeanFactory beanFactory;
     
-    @Autowired
+    @Autowired(required = false)
     private KnowledgeComponent knowledge;
     
     @Autowired
@@ -50,6 +50,8 @@ public class BrainFactory {
 
     @Autowired(required = false)
     private List<BrainFactoryCustomizer> brainFactoryCustomizers;
+
+
 
     private KnowledgeBrainCell knowledgeBrainCell;
     
@@ -61,27 +63,20 @@ public class BrainFactory {
     private Map<String, ConversationInfo> conversationInfoMap;
 
     private List<String> scanPackages = Lists.newArrayList("com.github.kingbbode.chatbot.core.base");
-    
-    //private Map<String, AbstractBrainCell> brainCellMap;
 
     @PostConstruct
     public void init() throws InvocationTargetException, IllegalAccessException, IOException {
         if(!ObjectUtils.isEmpty(brainFactoryCustomizers)) {
             brainFactoryCustomizers.forEach(brainFactoryCustomizer -> scanPackages.addAll(brainFactoryCustomizer.packages()));
         }
-        knowledgeBrainCell = new KnowledgeBrainCell(knowledge);
-        this.load(false);
-    }
-    
-    public void update() throws IOException, InvocationTargetException, IllegalAccessException {
-        this.load(true);
+        if(!ObjectUtils.isEmpty(knowledge)) {
+            knowledgeBrainCell = new KnowledgeBrainCell(knowledge);
+        }
+        this.load();
     }
 
     @SuppressWarnings("unchecked")
-    public void load(boolean isUpdate) throws InvocationTargetException, IllegalAccessException, IOException {
-        if(isUpdate){
-            knowledge.init();
-        }
+    private void load() throws InvocationTargetException, IllegalAccessException, IOException {
         Set<String> keyChecker = new HashSet<>();
         Map<String, String> command = new HashMap<>();
         Map<String, Map<String, String>> childCommand = new HashMap<>();
@@ -198,17 +193,13 @@ public class BrainFactory {
                     " : " +
                     brainCell.explain();
         }
-
-        public String getCommand() {
-            return command;
-        }
     }
 
     public static class ConversationInfo {
         private Map<String, String> afters = new HashMap<>();
         private String query;
 
-        public void setQuery(String query) {
+        void setQuery(String query) {
             this.query = query;
         }
 

@@ -33,7 +33,7 @@ import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.
  * Created by YG on 2017-07-10.
  */
 @Configuration
-@ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(ChatbotProperties.class)
 public class ChatbotAutoConfiguration {
     
