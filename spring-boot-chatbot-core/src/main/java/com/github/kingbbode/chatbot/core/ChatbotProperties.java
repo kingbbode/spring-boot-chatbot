@@ -15,6 +15,7 @@ public class ChatbotProperties {
     private boolean enableBase = true;
     private boolean enableKnowledge = false;
 
+    private boolean useExternalRedis = false;
     private String hostName = "localhost";
     private int port = Protocol.DEFAULT_PORT;
     private int timeout = Protocol.DEFAULT_TIMEOUT;

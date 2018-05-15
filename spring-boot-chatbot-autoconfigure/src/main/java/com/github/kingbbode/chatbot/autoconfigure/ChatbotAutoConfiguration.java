@@ -13,11 +13,13 @@ import com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,6 +28,9 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
+import redis.embedded.RedisServer;
+
+import java.io.IOException;
 
 import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.getRestOperations;
 
@@ -55,8 +60,18 @@ public class ChatbotAutoConfiguration {
         return new EventQueue();
     }
 
+    @Bean(name = "embeddedRedis", destroyMethod = "stop")
+    @ConditionalOnBean
+    @ConditionalOnProperty(name = "chatbot.useExternalRedis", havingValue = "true", matchIfMissing = true)
+    public RedisServer redisServer() throws IOException {
+        RedisServer redisServer = new RedisServer(chatbotProperties.getPort());
+        redisServer.start();
+        return redisServer;
+    }
+
     @Bean
     @ConditionalOnMissingBean
+    @DependsOn("embeddedRedis")
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
         jedisConnectionFactory.setHostName(chatbotProperties.getHostName());
