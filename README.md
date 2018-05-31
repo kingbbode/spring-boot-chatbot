@@ -1,7 +1,8 @@
 # Kingbbode Spring Boot Chatbot (COMING SOON....)
 
-- spring-boot-chatbot-line-starter
-- spring-boot-chatbot-teamup-starter
+- chatbot-spring-boot-line-starter
+- chatbot-spring-boot-teamup-starter
+- chatbot-spring-boot-telegram-starter
 
 ## echo example
 
