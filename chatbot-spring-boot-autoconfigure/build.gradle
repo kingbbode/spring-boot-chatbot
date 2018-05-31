@@ -4,7 +4,7 @@ apply plugin: 'org.springframework.boot'
 sourceCompatibility = 1.8
 
 dependencies {
-    compile project(":spring-boot-chatbot-core")
+    compile project(":chatbot-spring-boot-core")
     compileOnly project(":messenger:line")
     compileOnly project(":messenger:teamup")
     compileOnly project(":messenger:telegram")
