@@ -1,5 +1,6 @@
 package com.github.kingbbode.chatbot.core.event;
 
+import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import lombok.Data;
 import lombok.Getter;
@@ -15,16 +16,21 @@ import lombok.Setter;
 public class Event<T> {
     private Dispatcher<T> dispatcher;
     private T item;
+    private DispatcherBrain brain;
 
     public Event(Dispatcher<T> dispatcher, T item) {
         this.dispatcher = dispatcher;
         this.item = item;
     }
 
+    protected void setBrain(DispatcherBrain brain) {
+        this.brain = brain;
+    }
+
     //TODO: 결과를 반환한다.
     public void execute(){
         try {
-            dispatcher.onMessage(dispatcher.dispatch(item));
+            dispatcher.onMessage(brain.execute(dispatcher.dispatch(item)));
         } catch (EmptyResultException e) {
         }
     }

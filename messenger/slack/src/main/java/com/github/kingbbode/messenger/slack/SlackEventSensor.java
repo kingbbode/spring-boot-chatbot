@@ -1,37 +1,37 @@
 package com.github.kingbbode.messenger.slack;
 
 import allbegray.slack.SlackClientFactory;
-import allbegray.slack.rtm.Event;
 import allbegray.slack.rtm.EventListener;
 import allbegray.slack.rtm.SlackRealTimeMessagingClient;
-import allbegray.slack.webapi.SlackWebApiClient;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.event.Event;
+import com.github.kingbbode.chatbot.core.event.EventQueue;
 import org.springframework.beans.factory.DisposableBean;
 
 import javax.annotation.PostConstruct;
 
+import static allbegray.slack.rtm.Event.MESSAGE;
+
 public class SlackEventSensor implements EventListener, DisposableBean {
     private final SlackRealTimeMessagingClient slackRealTimeMessagingClient;
-    private final SlackWebApiClient webApiClient;
     private final SlackDispatcher slackDispatcher;
+    private final EventQueue eventQueue;
 
-    public SlackEventSensor(String token, SlackDispatcher slackDispatcher) {
+    public SlackEventSensor(String token, SlackDispatcher slackDispatcher, EventQueue eventQueue) {
         this.slackRealTimeMessagingClient = SlackClientFactory.createSlackRealTimeMessagingClient(token);
-        this.webApiClient = SlackClientFactory.createWebApiClient(token);
         this.slackDispatcher = slackDispatcher;
+        this.eventQueue = eventQueue;
     }
 
     @PostConstruct
     public void init() {
-        this.slackRealTimeMessagingClient.addListener(Event.MESSAGE, this);
+        this.slackRealTimeMessagingClient.addListener(MESSAGE, this);
         this.slackRealTimeMessagingClient.connect();
     }
 
     @Override
     public void onMessage(JsonNode message) {
-        BrainResult result = slackDispatcher.dispatch(message);
-        webApiClient.postMessage(result.getRoom(), result.getMessage());
+        this.eventQueue.offer(new Event<>(slackDispatcher, message));
     }
 
     @Override

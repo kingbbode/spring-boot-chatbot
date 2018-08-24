@@ -1,5 +1,6 @@
 package com.github.kingbbode.chatbot.core.event;
 
+import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,10 +32,15 @@ public class TaskRunner {
     @Autowired
     private List<EventSensor> eventSensors;
 
+    @Autowired
+    private DispatcherBrain brain;
+
     @Scheduled(fixedDelay = 10)
     private void execute(){
         while(eventQueue.hasNext()){
-            executer.execute(new FetcherTask(eventQueue.poll()));
+            Event event = eventQueue.poll();
+            event.setBrain(brain);
+            executer.execute(new FetcherTask(event));
         }
     }
     

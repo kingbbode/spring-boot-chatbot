@@ -7,7 +7,7 @@ import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 
-public class LineDispatcher implements Dispatcher<MessageEvent<TextMessageContent>, String> {
+public class LineDispatcher {
 
     private DispatcherBrain dispatcherBrain;
 
@@ -15,7 +15,6 @@ public class LineDispatcher implements Dispatcher<MessageEvent<TextMessageConten
         this.dispatcherBrain = dispatcherBrain;
     }
 
-    @Override
     public String dispatch(MessageEvent<TextMessageContent> event) {
         BrainRequest brainRequest = BrainRequest.builder()
                 .user(event.getSource().getUserId())

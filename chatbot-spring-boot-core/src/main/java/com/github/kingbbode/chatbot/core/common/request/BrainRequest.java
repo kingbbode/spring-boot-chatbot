@@ -18,8 +18,6 @@ public class BrainRequest {
     private String team;
     private String user;
     private String room;
-    
-    
     private String content;
     private Conversation conversation;
 

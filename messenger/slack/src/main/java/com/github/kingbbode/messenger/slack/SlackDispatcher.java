@@ -1,31 +1,39 @@
 package com.github.kingbbode.messenger.slack;
 
+import allbegray.slack.SlackClientFactory;
+import allbegray.slack.webapi.SlackWebApiClient;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
+import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 
-public class SlackDispatcher {
+public class SlackDispatcher implements Dispatcher<JsonNode> {
 
     private static final String CHANNEL = "channel";
     private static final String TEXT = "text";
     private static final String USER = "user";
 
-    private final DispatcherBrain dispatcherBrain;
+    private final SlackWebApiClient webApiClient;
 
-    public SlackDispatcher(DispatcherBrain dispatcherBrain) {
-        this.dispatcherBrain = dispatcherBrain;
+    public SlackDispatcher(String token) {
+        this.webApiClient = SlackClientFactory.createWebApiClient(token)
+        ;
     }
 
-    public BrainResult dispatch(JsonNode message) {
+    public BrainRequest dispatch(JsonNode message) {
         String channel = message.get(CHANNEL).asText();
         String text = message.get(TEXT).asText();
         String user = message.get(USER).asText();
 
-        return dispatcherBrain.execute(BrainRequest.builder()
+        return BrainRequest.builder()
                 .user(user)
                 .room(channel)
                 .content(text)
-                .build());
+                .build();
+    }
+
+    @Override
+    public void onMessage(BrainResult result) {
+        this.webApiClient.postMessage(result.getRoom(), result.getMessage());
     }
 }

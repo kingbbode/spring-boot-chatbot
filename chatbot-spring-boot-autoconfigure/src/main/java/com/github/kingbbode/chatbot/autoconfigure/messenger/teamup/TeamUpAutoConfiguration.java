@@ -1,10 +1,8 @@
 package com.github.kingbbode.chatbot.autoconfigure.messenger.teamup;
 
-import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactoryCustomizer;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory;
-import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.messenger.teamup.*;
 import com.github.kingbbode.messenger.teamup.message.MessageService;
 import com.github.kingbbode.messenger.teamup.templates.template.*;
@@ -16,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -63,14 +60,14 @@ public class TeamUpAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean
-        public TeamUpEventSensor teamUpEventSensor(EventQueue eventQueue){
-            return new TeamUpEventSensor(eventTemplate(null), eventQueue, teamUpDispatcher(null, null));
+        public TeamUpEventSensor teamUpEventSensor(){
+            return new TeamUpEventSensor(eventTemplate(null), teamUpDispatcher(null));
         }
 
         @Bean
         @ConditionalOnMissingBean
         public TeamUpTokenManager teamUpTokenManager(){
-            return new TeamUpTokenManager(teamUpEventSensor(null), oauth2Template(null, null));
+            return new TeamUpTokenManager(teamUpEventSensor(), oauth2Template(null, null));
         }
 
         @Bean
@@ -99,8 +96,8 @@ public class TeamUpAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean
-        public TeamUpDispatcher teamUpDispatcher(DispatcherBrain dispatcherBrain, TeamUpProperties teamUpProperties){
-            return new TeamUpDispatcher(messageService(), dispatcherBrain, teamUpProperties);
+        public TeamUpDispatcher teamUpDispatcher(TeamUpProperties teamUpProperties){
+            return new TeamUpDispatcher(messageService(), teamUpProperties);
         }
 
         @Bean

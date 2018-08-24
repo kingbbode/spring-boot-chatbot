@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 public class TeamUpEventSensor implements EventSensor {
 
     private final EventTemplate eventTemplate;
-
-    private final EventQueue eventQueue;
     
     private final TeamUpDispatcher teamUpDispatcher;
 

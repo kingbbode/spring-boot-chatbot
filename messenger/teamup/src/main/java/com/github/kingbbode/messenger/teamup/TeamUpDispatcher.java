@@ -1,6 +1,5 @@
 package com.github.kingbbode.messenger.teamup;
 
-import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
@@ -21,20 +20,18 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
     private static final int MESSAGE_TYPE = 1;
 
     private final MessageService messageService;
-    
-    private final DispatcherBrain dispatcherBrain;
 
     private final TeamUpProperties teamUpProperties;
 
     @Override
-    public BrainResult dispatch(EventResponse.Event event) {
+    public BrainRequest dispatch(EventResponse.Event event) {
         if (EVENT_MESSAGE.equals(event.getType())) {
             if (!teamUpProperties.getBot().contains(event.getChat().getUser())) {
                 return classification(event);
             }
-        } else if (EVENT_JOIN.equals(event.getType())) {
+        } /*else if (EVENT_JOIN.equals(event.getType())) {
             return BrainResult.Builder.GREETING.room( event.getChat().getRoom()).build();
-        }
+        }*/
         return skip();
     }
 
@@ -43,7 +40,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
         send(result);
     }
 
-    private BrainResult classification(EventResponse.Event event) {
+    private BrainRequest classification(EventResponse.Event event) {
         EventResponse.Event.Chat chat = event.getChat();
         MessageResponse.Message message = messageService.readMessage(event.getChat());
         if(MESSAGE_TYPE != message.getType()) {
@@ -59,7 +56,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
         if (!brainRequest.isValid()) {
             return skip();
         }
-        return dispatcherBrain.execute(brainRequest);
+        return brainRequest;
     }
 
     private void send(BrainResult result) {

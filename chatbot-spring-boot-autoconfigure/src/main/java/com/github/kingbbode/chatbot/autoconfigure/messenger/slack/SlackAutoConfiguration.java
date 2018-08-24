@@ -1,6 +1,6 @@
 package com.github.kingbbode.chatbot.autoconfigure.messenger.slack;
 
-import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
+import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.messenger.slack.SlackDispatcher;
 import com.github.kingbbode.messenger.slack.SlackEventSensor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -18,13 +18,13 @@ public class SlackAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackDispatcher slackDispatcher(DispatcherBrain dispatcherBrain) {
-        return new SlackDispatcher(dispatcherBrain);
+    public SlackDispatcher slackDispatcher(SlackProperties slackProperties) {
+        return new SlackDispatcher(slackProperties.getToken());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackEventSensor lineEtSensor(SlackProperties slackProperties, SlackDispatcher slackDispatcher) {
-        return new SlackEventSensor(slackProperties.getToken(), slackDispatcher);
+    public SlackEventSensor lineEtSensor(SlackProperties slackProperties, EventQueue eventQueue) {
+        return new SlackEventSensor(slackProperties.getToken(), slackDispatcher(null), eventQueue);
     }
 }
