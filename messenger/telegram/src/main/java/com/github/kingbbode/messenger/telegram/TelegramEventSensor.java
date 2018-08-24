@@ -1,5 +1,12 @@
 package com.github.kingbbode.messenger.telegram;
 
+import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
+import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
+import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.event.Event;
+import com.github.kingbbode.chatbot.core.event.EventQueue;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -8,16 +15,18 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 /**
  * Created by YG-MAC on 2018. 3. 4..
  */
-public class TelegramEventSensor extends TelegramLongPollingBot {
+@Slf4j
+public class TelegramEventSensor extends TelegramLongPollingBot implements Dispatcher<Update>, InitializingBean {
 
-    private TelegramDispatcher telegramDispatcher;
-    private String butUserName;
-    private String botToken;
+    private final String butUserName;
+    private final String botToken;
+    private final EventQueue eventQueue;
 
-    public TelegramEventSensor(TelegramDispatcher telegramDispatcher, String butUserName, String botToken) {
-        this.telegramDispatcher = telegramDispatcher;
+    public TelegramEventSensor(EventQueue eventQueue, String butUserName, String botToken) {
+        super();
         this.butUserName = butUserName;
         this.botToken = botToken;
+        this.eventQueue = eventQueue;
     }
 
     @Override
@@ -25,12 +34,7 @@ public class TelegramEventSensor extends TelegramLongPollingBot {
         if(!update.hasMessage()) {
             return;
         }
-        SendMessage sendMessage = new SendMessage(update.getMessage().getChatId(), telegramDispatcher.dispatch(update));
-        try {
-            sendApiMethod(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        this.eventQueue.offer(new Event<>(this, update));
     }
 
     @Override
@@ -41,5 +45,29 @@ public class TelegramEventSensor extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return botToken;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info("[BOT] Registered TelegramEventSensor.");
+    }
+
+    @Override
+    public BrainRequest dispatch(Update update) {
+        return BrainRequest.builder()
+                .user(String.valueOf(update.getMessage().getFrom().getId()))
+                .room(String.valueOf(update.getMessage().getChatId()))
+                .content(update.getMessage().getText())
+                .messageNo(String.valueOf(update.getMessage().getChatId()))
+                .build();
+    }
+
+    @Override
+    public void onMessage(BrainResult result) {
+        try {
+            sendApiMethod(new SendMessage(result.getRoom(), result.getMessage()));
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }

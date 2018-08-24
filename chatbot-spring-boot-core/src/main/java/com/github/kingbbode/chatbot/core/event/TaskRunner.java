@@ -11,29 +11,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by YG on 2016-08-17.
  */
 @Service
-@EnableScheduling
 @ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true")
 public class TaskRunner {
     
     @Resource(name = "eventQueueTreadPool")
     private ThreadPoolTaskExecutor executer;
 
-    @Autowired
-    private EventQueue eventQueue;
+    private final EventQueue eventQueue;
+
+    private final List<EventSensor> eventSensors;
+
+    private final DispatcherBrain brain;
 
     @Autowired
-    private List<EventSensor> eventSensors;
-
-    @Autowired
-    private DispatcherBrain brain;
+    public TaskRunner(EventQueue eventQueue, List<EventSensor> eventSensors, DispatcherBrain brain) {
+        this.eventQueue = eventQueue;
+        this.eventSensors = Optional.ofNullable(eventSensors).orElse(Collections.emptyList());
+        this.brain = brain;
+    }
 
     @Scheduled(fixedDelay = 10)
     private void execute(){

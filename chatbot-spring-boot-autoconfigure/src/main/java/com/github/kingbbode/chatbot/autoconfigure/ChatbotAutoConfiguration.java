@@ -8,10 +8,13 @@ import com.github.kingbbode.chatbot.core.base.stat.StatComponent;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.aop.BrainCellAspect;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactory;
+import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,11 +23,13 @@ import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestOperations;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.getRestOperations;
 
@@ -34,6 +39,7 @@ import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.
 @Configuration
 @ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(ChatbotProperties.class)
+@EnableScheduling
 public class ChatbotAutoConfiguration {
 
     public static final String EVENT_QUEUE_TREAD_POOL = "eventQueueTreadPool";
@@ -56,7 +62,6 @@ public class ChatbotAutoConfiguration {
     }
 
     @Bean(name = "embeddedRedis", destroyMethod = "stop")
-    @ConditionalOnBean
     @ConditionalOnProperty(name = "chatbot.useExternalRedis", havingValue = "true", matchIfMissing = true)
     public RedisServer redisServer() throws IOException {
         RedisServer redisServer = new RedisServer(chatbotProperties.getPort());
@@ -117,8 +122,8 @@ public class ChatbotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskRunner taskRunner(){
-        return new TaskRunner();
+    public TaskRunner taskRunner(@Autowired(required = false) List<EventSensor> eventSensors){
+        return new TaskRunner(eventQueue(), eventSensors, dispatcherBrain());
     }
 
     @Bean
@@ -155,7 +160,7 @@ public class ChatbotAutoConfiguration {
     }
 
     @Bean
-    @Profile({"dev"})
+    @Profile("!bot")
     public BotProperties devBotConfig(){
         return new BotProperties(chatbotProperties.getName(),"#" +  chatbotProperties.getCommandPrefix(), true);
     }

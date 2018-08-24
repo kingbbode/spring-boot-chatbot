@@ -84,10 +84,11 @@ public class BrainFactory {
         Map<String, ConversationInfo> conversationInfo = new HashMap<>();
         registerDefault(keyChecker, command, childCommand, key);
         Reflections reflections = findPackage(chatbotProperties.getBasePackage());
-        for(Class<?> clazz : reflections.getTypesAnnotatedWith(Brain.class)){
-            registerCommonBrainCellByClass(keyChecker, command, childCommand, key, clazz);
-        }
-        
+        reflections.getTypesAnnotatedWith(Brain.class).stream()
+                .filter(clazz -> !"BaseBrain".equals(clazz.getSimpleName()))
+                .filter(clazz -> !"KnowledgeBrain".equals(clazz.getSimpleName()))
+                .forEach(clazz -> registerCommonBrainCellByClass(keyChecker, command, childCommand, key, clazz));
+
         childCommand.forEach((key2, value2) -> {
             ConversationInfo info = new ConversationInfo();
             value2.forEach((key1, value1) -> {
@@ -120,7 +121,7 @@ public class BrainFactory {
     }
 
     private void registerCommonBrainCellByClass(Set<String> keyChecker, Map<String, String> command, Map<String, Map<String, String>> childCommand, Map<String, AbstractBrainCell> key, Class<?> clazz) {
-        for (Method method : clazz.getMethods()) {
+        for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(BrainCell.class)) {
                 BrainCell brainCell = method.getAnnotation(BrainCell.class);
                 if("".equals(brainCell.parent())) {
