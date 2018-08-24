@@ -1,0 +1,5 @@
+slack:
+  token: xxx
+telegram:
+  name: kingbbode-sample
+  token: xxx

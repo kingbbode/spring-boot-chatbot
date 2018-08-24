@@ -11,6 +11,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = "slack")
 public class SlackProperties {
-    private String name = "임시봇";
     private String token;
 }

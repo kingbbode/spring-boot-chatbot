@@ -3,7 +3,6 @@ package com.github.kingbbode.chatbot.autoconfigure.messenger.telegram;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.messenger.telegram.TelegramDispatcher;
 import com.github.kingbbode.messenger.telegram.TelegramEventSensor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
