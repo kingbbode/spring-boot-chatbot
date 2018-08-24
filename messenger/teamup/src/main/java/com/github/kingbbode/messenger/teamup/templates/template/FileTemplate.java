@@ -4,6 +4,7 @@ import com.github.kingbbode.messenger.teamup.Api;
 import com.github.kingbbode.messenger.teamup.TeamUpTokenManager;
 import com.github.kingbbode.messenger.teamup.request.FileRequest;
 import com.github.kingbbode.messenger.teamup.response.FileUploadResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,16 @@ import java.net.SocketTimeoutException;
 /**
  * Created by YG on 2017-05-17.
  */
+@Slf4j
 public class FileTemplate {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    @Qualifier(value = "fileRestOperations")
-    private RestOperations restOperations;
 
+    private final RestOperations restOperations;
+    private final TeamUpTokenManager tokenManager;
 
-    @Autowired
-    TeamUpTokenManager tokenManager;
+    public FileTemplate(RestOperations restOperations, TeamUpTokenManager tokenManager) {
+        this.restOperations = restOperations;
+        this.tokenManager = tokenManager;
+    }
 
     public byte[] download(FileRequest fileRequest) {
         HttpHeaders headers = new HttpHeaders();
@@ -43,22 +45,22 @@ public class FileTemplate {
         } catch (ResourceAccessException e) {
             Throwable t = e.getCause();
             if (t != null && !(t instanceof SocketTimeoutException)) {
-                logger.error("ResourceAccessException - {}", e);
+                log.error("ResourceAccessException - {}", e);
             }
         }catch (HttpClientErrorException e){
-            logger.error("HttpClientErrorException - {}", e);
+            log.error("HttpClientErrorException - {}", e);
         } catch (RestClientException e) {
-            logger.error("download.." + fileRequest.getParam(), e);
+            log.error("download.." + fileRequest.getParam(), e);
         }
         catch (Exception e) {
-            logger.error("url", e);
+            log.error("url", e);
         }
 
         if (responseEntity != null && responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return responseEntity.getBody();
         } else {
             if(responseEntity != null){
-                logger.error("StatusCode : " + responseEntity.getStatusCode());
+                log.error("StatusCode : " + responseEntity.getStatusCode());
             }
         }
         return null;
@@ -87,22 +89,22 @@ public class FileTemplate {
         } catch (ResourceAccessException e) {
             Throwable t = e.getCause();
             if (t != null && !(t instanceof SocketTimeoutException)) {
-                logger.error("ResourceAccessException - {}", e);
+                log.error("ResourceAccessException - {}", e);
             }
         }catch (HttpClientErrorException e){
-            logger.error("HttpClientErrorException - {}", e);
+            log.error("HttpClientErrorException - {}", e);
         } catch (RestClientException e) {
-            logger.error("upload.." + fileRequest.getTeam(), e);
+            log.error("upload.." + fileRequest.getTeam(), e);
         }
         catch (Exception e) {
-            logger.error("url", e);
+            log.error("url", e);
         }
 
         if (responseEntity != null && responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return responseEntity.getBody();
         } else {
             if(responseEntity != null){
-                logger.error("StatusCode : " + responseEntity.getStatusCode());
+                log.error("StatusCode : " + responseEntity.getStatusCode());
             }
         }
         return null;

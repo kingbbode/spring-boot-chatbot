@@ -8,6 +8,7 @@ import com.github.kingbbode.messenger.teamup.enums.ResponseType;
 import com.github.kingbbode.messenger.teamup.message.MessageService;
 import com.github.kingbbode.messenger.teamup.response.EventResponse;
 import com.github.kingbbode.messenger.teamup.response.MessageResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by YG on 2017-07-10.
  */
+@RequiredArgsConstructor
 public class TeamUpDispatcher implements Dispatcher<EventResponse.Event, Integer> {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private static final String EVENT_MESSAGE = "chat.message";
     private static final String EVENT_JOIN = "chat.join";
     private static final int MESSAGE_TYPE = 1;
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
     
-    @Autowired
-    private DispatcherBrain dispatcherBrain;
-    
-    @Autowired
-    private TeamUpProperties teamUpProperties;
+    private final DispatcherBrain dispatcherBrain;
+
+    private final TeamUpProperties teamUpProperties;
 
     @Override
     public Integer dispatch(EventResponse.Event event) {

@@ -1,28 +1,21 @@
 package com.github.kingbbode.messenger.teamup.templates.template;
 
 import com.github.kingbbode.messenger.teamup.Api;
+import com.github.kingbbode.messenger.teamup.TeamUpTokenManager;
 import com.github.kingbbode.messenger.teamup.response.OrganigrammeResponse;
 import com.github.kingbbode.messenger.teamup.response.RoomInfoResponse;
 import com.github.kingbbode.messenger.teamup.templates.BaseTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestOperations;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by YG on 2017-05-18.
  */
 public class AuthTemplate extends BaseTemplate {
 
-    @Autowired
-    @Qualifier(value = "messageRestOperations")
-    private RestOperations restOperations;
-
-    @PostConstruct
-    void init(){
-        super.setRestOperations(restOperations);
+    public AuthTemplate(TeamUpTokenManager tokenManager, RestOperations restOperations) {
+        super(tokenManager, restOperations);
     }
 
     public OrganigrammeResponse readOrganigramme() {

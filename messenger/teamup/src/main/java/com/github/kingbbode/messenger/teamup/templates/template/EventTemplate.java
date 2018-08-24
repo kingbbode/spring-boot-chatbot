@@ -1,6 +1,7 @@
 package com.github.kingbbode.messenger.teamup.templates.template;
 
 import com.github.kingbbode.messenger.teamup.Api;
+import com.github.kingbbode.messenger.teamup.TeamUpTokenManager;
 import com.github.kingbbode.messenger.teamup.response.EventResponse;
 import com.github.kingbbode.messenger.teamup.templates.BaseTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,8 @@ import javax.annotation.PostConstruct;
 public class EventTemplate extends BaseTemplate {
 
 
-    @Autowired
-    @Qualifier(value = "eventRestOperations")
-    RestOperations restOperations;
-    
-    @PostConstruct
-    void init(){
-        super.setRestOperations(restOperations);
+    public EventTemplate(TeamUpTokenManager tokenManager, RestOperations restOperations) {
+        super(tokenManager, restOperations);
     }
 
     public EventResponse getEvent() {

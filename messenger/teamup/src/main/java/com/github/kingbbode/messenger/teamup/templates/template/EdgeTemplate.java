@@ -3,6 +3,7 @@ package com.github.kingbbode.messenger.teamup.templates.template;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.github.kingbbode.messenger.teamup.Api;
 import com.github.kingbbode.messenger.teamup.TeamUpProperties;
+import com.github.kingbbode.messenger.teamup.TeamUpTokenManager;
 import com.github.kingbbode.messenger.teamup.request.MessageRequest;
 import com.github.kingbbode.messenger.teamup.request.RoomCreateRequest;
 import com.github.kingbbode.messenger.teamup.response.FeedGroupsResponse;
@@ -23,21 +24,16 @@ import javax.annotation.PostConstruct;
  */
 public class EdgeTemplate extends BaseTemplate {
     
-    @Autowired
-    private BotProperties botProperties;
-    
-    @Autowired
-    private TeamUpProperties teamUpProperties;
+    private final BotProperties botProperties;
 
-    @Autowired
-    @Qualifier(value = "messageRestOperations")
-    private RestOperations restOperations;
-    
-    @PostConstruct
-    void init(){
-        super.setRestOperations(restOperations);
+    private final TeamUpProperties teamUpProperties;
+
+    public EdgeTemplate(TeamUpTokenManager tokenManager, RestOperations restOperations, BotProperties botProperties, TeamUpProperties teamUpProperties) {
+        super(tokenManager, restOperations);
+        this.botProperties = botProperties;
+        this.teamUpProperties = teamUpProperties;
     }
-    
+
     @Async
     public MessageResponse readMessage(String message, String room) {
         ParameterizedTypeReference<MessageResponse> p = new ParameterizedTypeReference<MessageResponse>() {

@@ -9,7 +9,6 @@ import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.aop.BrainCellAspect;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactory;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
-import com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
@@ -17,17 +16,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -41,7 +35,8 @@ import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.
 @ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(ChatbotProperties.class)
 public class ChatbotAutoConfiguration {
-    
+
+    public static final String EVENT_QUEUE_TREAD_POOL = "eventQueueTreadPool";
     private ChatbotProperties chatbotProperties;
 
     public ChatbotAutoConfiguration(ChatbotProperties chatbotProperties) {
@@ -101,7 +96,8 @@ public class ChatbotAutoConfiguration {
         return new ConversationService();
     }
 
-    @Bean(name = "messageRestOperations")
+    @Bean
+    @Primary
     public RestOperations messageRestOperations() {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectTimeout(1000);
@@ -109,25 +105,7 @@ public class ChatbotAutoConfiguration {
         return getRestOperations(factory);
     }
 
-    @Bean(name = "fileRestOperations")
-    public RestOperations fileRestOperations() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(20000);
-        factory.setReadTimeout(20000);
-        RestTemplate restTemplate = (RestTemplate) RestTemplateFactory.getRestOperations(factory);
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-        return restTemplate;
-    }
-
-    @Bean(name = "eventRestOperations")
-    public RestOperations eventRestOperations() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(30000);
-        factory.setReadTimeout(30000);
-        return getRestOperations(factory);
-    }
-
-    @Bean(name = "eventQueueTreadPool")
+    @Bean(name = EVENT_QUEUE_TREAD_POOL)
     public ThreadPoolTaskExecutor eventQueueTreadPool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);

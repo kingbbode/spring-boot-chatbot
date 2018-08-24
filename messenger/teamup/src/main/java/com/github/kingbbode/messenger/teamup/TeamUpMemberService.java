@@ -3,6 +3,7 @@ package com.github.kingbbode.messenger.teamup;
 import com.github.kingbbode.messenger.teamup.response.OrganigrammeResponse;
 import com.github.kingbbode.messenger.teamup.response.RoomInfoResponse;
 import com.github.kingbbode.messenger.teamup.templates.template.AuthTemplate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,14 +12,13 @@ import javax.annotation.PostConstruct;
 /**
  * Created by YG on 2017-03-31.
  */
+@RequiredArgsConstructor
 @Transactional
 public class TeamUpMemberService {
     
-    @Autowired
-    private TeamUpMemberCached memberCached;
-    
-    @Autowired
-    private AuthTemplate authTemplate;
+    private final TeamUpMemberCached memberCached;
+
+    private final AuthTemplate authTemplate;
 
     @PostConstruct
     public void update(){

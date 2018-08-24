@@ -1,6 +1,8 @@
 package com.github.kingbbode.messenger.teamup.templates;
 
 import com.github.kingbbode.messenger.teamup.TeamUpTokenManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +18,13 @@ import java.net.SocketTimeoutException;
 /**
  * Created by YG on 2016-10-13.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class BaseTemplate {
-    private static final Logger logger = LoggerFactory.getLogger(BaseTemplate.class);
-    
-    @Autowired
-    private TeamUpTokenManager tokenManager;
-    
-    private RestOperations restOperations;
 
-    public void setRestOperations(RestOperations restOperations) {
-        this.restOperations = restOperations;
-    }
+    private final TeamUpTokenManager tokenManager;
+    
+    private final RestOperations restOperations;
 
     protected <T> T get(String url, ParameterizedTypeReference<T> p) {
         return send(url, null, p, HttpMethod.GET);
@@ -50,22 +48,22 @@ public class BaseTemplate {
         } catch (ResourceAccessException e) {
             Throwable t = e.getCause();
             if (t != null && !(t instanceof SocketTimeoutException)) {
-                logger.error("ResourceAccessException - {}", e);
+                log.error("ResourceAccessException - {}", e);
             }
         }catch (HttpClientErrorException e){            
-            logger.error("HttpClientErrorException - {}", e);        
+            log.error("HttpClientErrorException - {}", e);
         } catch (RestClientException e) {
-            logger.error(url, e);
+            log.error(url, e);
         }
         catch (Exception e) {
-            logger.error("url", e);
+            log.error("url", e);
         }
 
         if (responseEntity != null && responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return responseEntity.getBody();
         } else {
             if(responseEntity != null){
-                logger.error("StatusCode : " + responseEntity.getStatusCode());
+                log.error("StatusCode : " + responseEntity.getStatusCode());
             }
         }
         return null;

@@ -15,13 +15,15 @@ import org.springframework.web.client.RestOperations;
  * Created by YG on 2016-10-14.
  */
 public class Oauth2Template  {
-    @Autowired
-    @Qualifier(value = "messageRestOperations")
-    private RestOperations restOperations;
-    
-    @Autowired
-    private TeamUpProperties teamUpProperties;
-    
+
+    private final RestOperations restOperations;
+    private final TeamUpProperties teamUpProperties;
+
+    public Oauth2Template(RestOperations restOperations, TeamUpProperties teamUpProperties) {
+        this.restOperations = restOperations;
+        this.teamUpProperties = teamUpProperties;
+    }
+
     public OAuth2Token token(OAuth2Token token){
         if (token == null) {
             return post(token, GrantType.PASSWORD);

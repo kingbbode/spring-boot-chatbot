@@ -8,6 +8,8 @@ import com.github.kingbbode.messenger.teamup.response.MessageResponse;
 import com.github.kingbbode.messenger.teamup.response.RoomCreateResponse;
 import com.github.kingbbode.messenger.teamup.templates.template.EdgeTemplate;
 import com.github.kingbbode.messenger.teamup.templates.template.FileTemplate;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +18,13 @@ import org.springframework.util.ObjectUtils;
 /**
  * Created by YG on 2016-03-28.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class MessageService {
-
-    private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
     
-    @Autowired
-    private EdgeTemplate edgeTemplate;
+    private final EdgeTemplate edgeTemplate;
     
-    @Autowired
-    private FileTemplate fileTemplate;
+    private final FileTemplate fileTemplate;
 
     /*public String excuteMessageForChat(String content, String command) {
         return getMessageResult("999999999999", "8170", content, command);
@@ -67,7 +67,7 @@ public class MessageService {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            logger.warn("InterruptedException");
+            log.warn("InterruptedException");
         }
         edgeTemplate.outRoom(result.getRoom());
     }
