@@ -9,6 +9,7 @@ import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainCellResult;
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,8 +24,6 @@ import org.springframework.util.ObjectUtils;
  */
 @Aspect
 public class BrainCellAspect {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @Autowired
     private ConversationService conversationService;

@@ -1,4 +1,4 @@
-package com.github.kingbbode.chatbot.autoconfigure.messenger.telegram;
+package com.github.kingbbode.chatbot.autoconfigure.messenger.slack;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "telegram")
-public class TelegramProperties {
+@ConfigurationProperties(prefix = "slack")
+public class SlackProperties {
     private String name = "임시봇";
     private String token;
 }

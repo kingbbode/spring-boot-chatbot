@@ -6,8 +6,12 @@ include 'messenger:teamup'
 findProject(':messenger:teamup')?.name = 'teamup'
 include 'messenger:telegram'
 findProject(':messenger:telegram')?.name = 'telegram'
+include 'messenger:slack'
+findProject(':messenger:slack')?.name = 'slack'
 
 include 'chatbot-spring-boot-autoconfigure'
 include 'chatbot-spring-boot-line-starter'
 include 'chatbot-spring-boot-teamup-starter'
 include 'chatbot-spring-boot-telegram-starter'
+include 'chatbot-spring-boot-slack-starter'
+

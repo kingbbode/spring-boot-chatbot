@@ -1,14 +1,17 @@
 package com.github.kingbbode.chatbot.core;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import redis.clients.jedis.Protocol;
 
 /**
  * Created by YG on 2017-07-10.
  */
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "chatbot")
-@Data
 public class ChatbotProperties {
     private String name = "default";
     private String basePackage = "";

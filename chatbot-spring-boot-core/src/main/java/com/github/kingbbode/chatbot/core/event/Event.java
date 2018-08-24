@@ -2,11 +2,16 @@ package com.github.kingbbode.chatbot.core.event;
 
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Created by YG on 2017-07-10.
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Event<T, K> {
     private Dispatcher<T, K> dispatcher;
     private T item;

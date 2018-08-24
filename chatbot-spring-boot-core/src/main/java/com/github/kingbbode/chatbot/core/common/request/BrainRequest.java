@@ -4,13 +4,15 @@ package com.github.kingbbode.chatbot.core.common.request;
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 
 /**
  * Created by YG on 2017-01-23.
  */
-@Data
-@Builder
+@Getter
+@Setter
 public class BrainRequest {
     private String messageNo;
     private String team;
@@ -20,6 +22,16 @@ public class BrainRequest {
     
     private String content;
     private Conversation conversation;
+
+    @Builder
+    public BrainRequest(String messageNo, String team, String user, String room, String content) {
+        this.messageNo = messageNo;
+        this.team = team;
+        this.user = user;
+        this.room = room;
+        this.content = content;
+    }
+
     /*
     public BrainRequest(EventResponse.Event.Chat chat, MessageResponse.Message message) {
         this.user = String.valueOf(message.getUser());
