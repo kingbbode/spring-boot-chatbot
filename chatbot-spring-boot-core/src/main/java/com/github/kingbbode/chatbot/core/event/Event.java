@@ -12,16 +12,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Event<T, K> {
-    private Dispatcher<T, K> dispatcher;
+public class Event<T> {
+    private Dispatcher<T> dispatcher;
     private T item;
 
-    public Event(Dispatcher<T, K> dispatcher, T item) {
+    public Event(Dispatcher<T> dispatcher, T item) {
         this.dispatcher = dispatcher;
         this.item = item;
     }
 
+    //TODO: 결과를 반환한다.
     public void execute(){
-        dispatcher.dispatch(item);
+        try {
+            dispatcher.onMessage(dispatcher.dispatch(item));
+        } catch (EmptyResultException e) {
+        }
     }
 }

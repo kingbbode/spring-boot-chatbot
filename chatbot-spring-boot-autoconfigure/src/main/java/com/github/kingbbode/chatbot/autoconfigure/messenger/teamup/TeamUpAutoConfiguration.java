@@ -52,7 +52,6 @@ public class TeamUpAutoConfiguration {
         return getRestOperations(factory);
     }
 
-    @EnableScheduling
     @EnableConfigurationProperties({TeamUpProperties.class})
     public static class TeamUpConfiguration {
 

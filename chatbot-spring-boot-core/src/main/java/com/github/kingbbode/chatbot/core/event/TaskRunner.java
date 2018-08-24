@@ -1,13 +1,18 @@
 package com.github.kingbbode.chatbot.core.event;
 
+import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by YG on 2016-08-17.
@@ -22,6 +27,9 @@ public class TaskRunner {
 
     @Autowired
     private EventQueue eventQueue;
+
+    @Autowired
+    private List<EventSensor> eventSensors;
 
     @Scheduled(fixedDelay = 10)
     private void execute(){
@@ -40,5 +48,13 @@ public class TaskRunner {
         public void run() {
             this.event.execute();
         }
+    }
+
+    @Scheduled(fixedDelay = 10)
+    public void sensingEvent(){
+        eventSensors.stream()
+                .map(EventSensor::sensingEvent)
+                .flatMap(Collection::stream)
+                .forEach(event -> this.eventQueue.offer(event));
     }
 }

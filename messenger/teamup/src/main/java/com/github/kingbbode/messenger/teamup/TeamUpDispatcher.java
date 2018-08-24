@@ -9,15 +9,12 @@ import com.github.kingbbode.messenger.teamup.message.MessageService;
 import com.github.kingbbode.messenger.teamup.response.EventResponse;
 import com.github.kingbbode.messenger.teamup.response.MessageResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by YG on 2017-07-10.
  */
 @RequiredArgsConstructor
-public class TeamUpDispatcher implements Dispatcher<EventResponse.Event, Integer> {
+public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
 
     private static final String EVENT_MESSAGE = "chat.message";
     private static final String EVENT_JOIN = "chat.join";
@@ -30,22 +27,27 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event, Integer
     private final TeamUpProperties teamUpProperties;
 
     @Override
-    public Integer dispatch(EventResponse.Event event) {
+    public BrainResult dispatch(EventResponse.Event event) {
         if (EVENT_MESSAGE.equals(event.getType())) {
             if (!teamUpProperties.getBot().contains(event.getChat().getUser())) {
-                classification(event);
+                return classification(event);
             }
         } else if (EVENT_JOIN.equals(event.getType())) {
-            send(BrainResult.Builder.GREETING.room( event.getChat().getRoom()).build());
+            return BrainResult.Builder.GREETING.room( event.getChat().getRoom()).build();
         }
-        return 0;
+        return skip();
     }
 
-    private void classification(EventResponse.Event event) {
+    @Override
+    public void onMessage(BrainResult result) {
+        send(result);
+    }
+
+    private BrainResult classification(EventResponse.Event event) {
         EventResponse.Event.Chat chat = event.getChat();
         MessageResponse.Message message = messageService.readMessage(event.getChat());
         if(MESSAGE_TYPE != message.getType()) {
-            return;
+            return skip();
         }
         BrainRequest brainRequest = BrainRequest.builder()
                                     .user(String.valueOf(message.getUser()))
@@ -55,9 +57,9 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event, Integer
                                     .team(chat.getTeam())
                                     .build();
         if (!brainRequest.isValid()) {
-            return;
+            return skip();
         }
-        send(dispatcherBrain.execute(brainRequest));
+        return dispatcherBrain.execute(brainRequest);
     }
 
     private void send(BrainResult result) {
