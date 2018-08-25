@@ -1,5 +1,8 @@
 # Kingbbode Spring Boot Chatbot
 
+[![Release](https://jitpack.io/v/User/Repo.svg)]
+(https://jitpack.io/kingbbode/spring-boot-chatbot)
+
 스프링 부트 기반 대화형 챗봇 서포트 프레임워크!
 
 - Spring Framework 기반
