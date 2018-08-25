@@ -36,10 +36,15 @@ public class HelloWorldBrain {
 
     @BrainCell(function = "record-read", key="조회", parent = "record-start")
     public String record2(BrainRequest brainRequest) {
+        return  "무엇을?";
+    }
+
+    @BrainCell(function = "record-read-2", parent = "record-read")
+    public String record21(BrainRequest brainRequest) {
         return  map.getOrDefault(brainRequest.getContent(), "저장된 내용이 없다");
     }
 
-    @BrainCell(function = "record-save", key="기록", parent = "record-start")
+    @BrainCell(function = "record-save", key="저장", parent = "record-start")
     public String record3(BrainRequest brainRequest) {
         return  "무엇을?";
     }

@@ -6,13 +6,20 @@ import allbegray.slack.rtm.SlackRealTimeMessagingClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.kingbbode.chatbot.core.event.Event;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.PostConstruct;
 
+import java.util.Optional;
+
 import static allbegray.slack.rtm.Event.MESSAGE;
 
-public class SlackEventSensor implements EventListener, DisposableBean {
+@Slf4j
+public class SlackEventSensor implements EventListener, InitializingBean, DisposableBean {
+    private static final String BOT_MESSAGE = "bot_message";
+    private static final String SUBTYPE = "subtype";
     private final SlackRealTimeMessagingClient slackRealTimeMessagingClient;
     private final SlackDispatcher slackDispatcher;
     private final EventQueue eventQueue;
@@ -31,11 +38,23 @@ public class SlackEventSensor implements EventListener, DisposableBean {
 
     @Override
     public void onMessage(JsonNode message) {
+        if(isBot(message)) {
+            return;
+        }
         this.eventQueue.offer(new Event<>(slackDispatcher, message));
+    }
+
+    private boolean isBot(JsonNode message) {
+        return BOT_MESSAGE.equals(Optional.ofNullable(message.get(SUBTYPE)).map(JsonNode::asText).orElse(null));
     }
 
     @Override
     public void destroy() throws Exception {
         this.slackRealTimeMessagingClient.close();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info("[BOT] Registered SlackDispatcher.");
     }
 }

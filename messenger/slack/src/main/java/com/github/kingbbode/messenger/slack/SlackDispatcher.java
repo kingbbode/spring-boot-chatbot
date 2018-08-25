@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 
-public class SlackDispatcher implements Dispatcher<JsonNode> {
+@Slf4j
+public class SlackDispatcher implements Dispatcher<JsonNode>, InitializingBean {
 
     private static final String CHANNEL = "channel";
     private static final String TEXT = "text";
@@ -35,5 +38,10 @@ public class SlackDispatcher implements Dispatcher<JsonNode> {
     @Override
     public void onMessage(BrainResult result) {
         this.webApiClient.postMessage(result.getRoom(), result.getMessage());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info("[BOT] Registered SlackDispatcher.");
     }
 }
