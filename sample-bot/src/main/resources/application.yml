@@ -1,5 +1,10 @@
-slack:
-  token: xxx
 telegram:
   name: kingbbode-sample
   token: xxx
+slack:
+  token: xxx
+
+line:
+  bot:
+    channel-token: xxx
+    channel-secret: xxx
