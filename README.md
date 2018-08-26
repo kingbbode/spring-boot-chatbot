@@ -127,7 +127,7 @@ dependencies {
 }
 ```
 
-## application.yml
+## Properties
 
 ```java
 # CHAT-BOT
