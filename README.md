@@ -15,22 +15,9 @@
 - chatbot-spring-boot-telegram-starter
 - chatbot-spring-boot-teamup-starter
 
-## Gradle
+---
 
-```
-allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
-}
-```
-
-```
-dependencies {
-    compile 'com.github.kingbbode:{select starter pack}:{version}'
-}
-```
+# 소개
 
 ## echo example
 
@@ -121,7 +108,49 @@ dependencies {
 
 ---
 
-# 연동
+# 연동 
+
+## Gradle
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+```
+dependencies {
+    compile 'com.github.kingbbode:{select starter pack}:{version}'
+}
+```
+
+## application.yml
+
+```java
+# CHAT-BOT
+chatbot.name = default # 내부적으로 사용되는 챗봇 고유 이름
+chatbot.base-package = # Brain Scan Package.
+chatbot.enabled = true # 챗봇 활성화 여부
+chatbot.enableBase = true # 기본 기능 사용 여부 (#기능 : 기능 목록 출력)
+chatbot.enableKnowledge = true # 학습 기능 사용 여부 (심심이 같은 기능)
+
+# Redis (default Embeded Redis)
+chatbot.hostName = localhost
+chatbot.port = 6879
+chatbot.timeout = 0
+chatbot.password = # password
+chatbot.usePool = true
+chatbot.useSsl = false
+chatbot.db-index = 0
+chatbot.client-name = # clientName
+chatbot.convert-pipeline-and-tx-results = true
+
+# Command
+chatbot.command-prefix = "#" # 커맨드 접두어 설정. 
+```
 
 ## Slack Starter
 
