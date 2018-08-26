@@ -243,6 +243,19 @@ telegram:
 
 ---
 
+## History
+
+1. 첫 프레임워크화
+https://github.com/kingbbode/chatbot-framework 
+
+2. starter pack 구성 시작
+https://github.com/ultzum/spring-boot-starter-chatbot
+
+3. 현재
+https://github.com/kingbbode/spring-boot-chatbot
+
+---
+
 # TODO
 - 테스트 코드 작성 ( 폭망..)
 - 버전 상향
