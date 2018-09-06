@@ -1,22 +1,24 @@
-allprojects {
+group 'com.github.kingbbode'
+version '0.2.3'
 
-    group 'com.github.kingbbode'
-    version '0.2.3'
-
-    buildscript {
-        ext {
-            springBootVersion = '1.5.11.RELEASE'
-        }
-        repositories {
-            jcenter()
-            mavenCentral()
-            maven { url "https://jitpack.io" }
-        }
-        dependencies {
-            classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        }
+buildscript {
+    ext {
+        springBootVersion = '2.0.4.RELEASE'
     }
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
 
+configure(subprojects.findAll {it.name != 'messenger'}) {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "io.spring.dependency-management"
 
     repositories {
         jcenter()
