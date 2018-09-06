@@ -18,8 +18,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -38,7 +40,7 @@ import static com.github.kingbbode.chatbot.core.common.util.RestTemplateFactory.
  */
 @Configuration
 @ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties(ChatbotProperties.class)
+@EnableConfigurationProperties({RedisProperties.class, ChatbotProperties.class})
 @EnableScheduling
 public class ChatbotAutoConfiguration {
 
@@ -63,36 +65,10 @@ public class ChatbotAutoConfiguration {
 
     @Bean(name = "embeddedRedis", destroyMethod = "stop")
     @ConditionalOnProperty(name = "chatbot.useExternalRedis", havingValue = "true", matchIfMissing = true)
-    public RedisServer redisServer() throws IOException {
-        RedisServer redisServer = new RedisServer(chatbotProperties.getPort());
+    public RedisServer redisServer(RedisProperties redisProperties) throws IOException {
+        RedisServer redisServer = new RedisServer(redisProperties.getPort());
         redisServer.start();
         return redisServer;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @DependsOn("embeddedRedis")
-    public JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-        jedisConnectionFactory.setHostName(chatbotProperties.getHostName());
-        jedisConnectionFactory.setPort(chatbotProperties.getPort());
-        jedisConnectionFactory.setTimeout(chatbotProperties.getTimeout());
-        jedisConnectionFactory.setPassword(chatbotProperties.getPassword());
-        jedisConnectionFactory.setUsePool(chatbotProperties.isUsePool());
-        jedisConnectionFactory.setUseSsl(chatbotProperties.isUseSsl());
-        jedisConnectionFactory.setDatabase(chatbotProperties.getDbIndex());
-        jedisConnectionFactory.setClientName(chatbotProperties.getClientName());
-        jedisConnectionFactory.setConvertPipelineAndTxResults(chatbotProperties.isConvertPipelineAndTxResults());
-
-        return jedisConnectionFactory;
-    }
-    
-    @Bean
-    @ConditionalOnMissingBean
-    public StringRedisTemplate redisTemplate(JedisConnectionFactory jedisConnectionFactory) {
-        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setConnectionFactory(jedisConnectionFactory);
-        return stringRedisTemplate;
     }
 
     @Bean
