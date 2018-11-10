@@ -14,7 +14,5 @@ include 'chatbot-spring-boot-line-starter'
 include 'chatbot-spring-boot-teamup-starter'
 include 'chatbot-spring-boot-telegram-starter'
 include 'chatbot-spring-boot-slack-starter'
-
-if (!System.env.JITPACK)
-    include 'sample-bot'
+include 'sample-bot'
 
