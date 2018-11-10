@@ -17,6 +17,7 @@ import org.asynchttpclient.ws.WebSocketListener;
 import org.asynchttpclient.ws.WebSocketUpgradeHandler;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,6 +142,9 @@ public class SlackRealTimeMessagingClientCustomize {
 
                 @Override
                 public void onTextFrame(String message, boolean finalFragment, int rsv) {
+                    byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+                    message = new String(bytes, StandardCharsets.UTF_8);
+
                     String type = null;
                     JsonNode node = null;
                     try {
