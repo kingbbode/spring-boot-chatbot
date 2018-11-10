@@ -4,9 +4,6 @@ apply plugin: "io.spring.dependency-management"
 
 sourceCompatibility = 1.8
 
-bootJar { enabled = true }
-jar { enabled = true }
-
 dependencies {
     compile project(":chatbot-spring-boot-line-starter")
     compile project(":chatbot-spring-boot-slack-starter")
