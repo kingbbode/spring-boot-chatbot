@@ -8,6 +8,7 @@ jar { enabled = true }
 
 dependencies {
     compile project(":chatbot-spring-boot-core")
+    compile('org.asynchttpclient:async-http-client:2.4.5')
     compile('com.github.allbegray:slack-api:v1.6.0.RELEASE')
     compileOnly("org.projectlombok:lombok:1.16.16")
     testCompile group: 'junit', name: 'junit', version: '4.12'
