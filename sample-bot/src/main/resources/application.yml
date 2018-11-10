@@ -8,3 +8,5 @@ line:
   bot:
     channel-token: xxx
     channel-secret: xxx
+
+debug: true

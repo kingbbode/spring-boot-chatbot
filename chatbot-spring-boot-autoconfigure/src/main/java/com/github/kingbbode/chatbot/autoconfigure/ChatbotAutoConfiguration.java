@@ -14,16 +14,14 @@ import com.github.kingbbode.chatbot.core.conversation.ConversationService;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.*;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -64,7 +62,7 @@ public class ChatbotAutoConfiguration {
     }
 
     @Bean(name = "embeddedRedis", destroyMethod = "stop")
-    @ConditionalOnProperty(name = "chatbot.useExternalRedis", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "chatbot.enableEmbeddedRedis", havingValue = "true", matchIfMissing = true)
     public RedisServer redisServer(RedisProperties redisProperties) throws IOException {
         RedisServer redisServer = new RedisServer(redisProperties.getPort());
         redisServer.start();

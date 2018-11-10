@@ -3,6 +3,10 @@ apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
 
+bootJar { enabled = false }
+jar { enabled = true }
+
+
 dependencies {
     compile project(":chatbot-spring-boot-autoconfigure")
     compile project(":messenger:slack")

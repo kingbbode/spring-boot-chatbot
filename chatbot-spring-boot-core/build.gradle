@@ -4,6 +4,9 @@ apply plugin: "io.spring.dependency-management"
 
 sourceCompatibility = 1.8
 
+bootJar { enabled = false }
+jar { enabled = true }
+
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-aop')
