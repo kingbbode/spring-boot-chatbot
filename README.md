@@ -104,9 +104,9 @@ public String echo2(BrainRequest brainRequest) {
 
 ```
 dependencies {
-    compile 'com.github.kingbbode:chatbot-spring-boot-slack-starter:{version}'
-    compile 'com.github.kingbbode:chatbot-spring-boot-line-starter:{version}'
-    compile 'com.github.kingbbode:chatbot-spring-boot-telegram-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-slack-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-line-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-telegram-starter:{version}'
 }
 ```
 
@@ -166,7 +166,7 @@ chatbot.command-prefix = "#" # 커맨드 접두어 설정.
 
 ```
 dependencies {
-    compile 'com.github.kingbbode:chatbot-spring-boot-slack-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-slack-starter:{version}'
 }
 ```
 
@@ -203,7 +203,7 @@ slack:
 
 ```
 dependencies {
-    compile 'com.github.kingbbode:chatbot-spring-boot-line-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-line-starter:{version}'
 }
 ```
 
@@ -258,7 +258,7 @@ line:
 
 ```
 dependencies {
-    compile 'com.github.kingbbode:chatbot-spring-boot-telegram-starter:{version}'
+    compile 'com.github.kingbbode.spring-boot-chatbot:chatbot-spring-boot-telegram-starter:{version}'
 }
 ```
 
