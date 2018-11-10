@@ -15,6 +15,14 @@
 - chatbot-spring-boot-telegram-starter
 - chatbot-spring-boot-teamup-starter
 
+## Release Notes
+
+### Version 0.4.0 
+
+*2018-11-10*
+    
+- BOOT 2.x 기반 업데이트
+
 ---
 
 # 소개

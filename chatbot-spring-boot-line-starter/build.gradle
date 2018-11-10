@@ -1,7 +1,11 @@
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
 
 sourceCompatibility = 1.8
+
+bootJar { enabled = false }
+jar { enabled = true }
 
 dependencies {
     compile project(":chatbot-spring-boot-autoconfigure")

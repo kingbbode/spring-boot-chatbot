@@ -3,6 +3,10 @@ apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
 
+bootJar { enabled = false }
+jar { enabled = true }
+
+
 dependencies {
     compile project(":chatbot-spring-boot-core")
     compile('com.linecorp.bot:line-bot-spring-boot:1.14.0')

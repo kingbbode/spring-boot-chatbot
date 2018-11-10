@@ -24,7 +24,7 @@ public class SlackAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackEventSensor lineEtSensor(SlackProperties slackProperties, EventQueue eventQueue) {
+    public SlackEventSensor slackEventSensor(SlackProperties slackProperties, EventQueue eventQueue) {
         return new SlackEventSensor(slackProperties.getToken(), slackDispatcher(null), eventQueue);
     }
 }
