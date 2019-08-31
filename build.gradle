@@ -1,28 +1,50 @@
-group 'com.github.kingbbode'
-version '0.4.2'
-
 buildscript {
-    ext {
-        springBootVersion = '2.0.4.RELEASE'
-    }
     repositories {
         jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+ext {
+    set('springCloudVersion', "Greenwich.SR2")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
+group 'com.github.kingbbode'
+version '0.4.2'
 
 configure(subprojects.findAll {it.name != 'messenger'}) {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
-    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'io.spring.dependency-management'
 
     repositories {
         jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor 'org.projectlombok:lombok'
+        testCompile("junit:junit:4.12")
     }
 }

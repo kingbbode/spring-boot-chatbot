@@ -1,14 +1,7 @@
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-
-sourceCompatibility = 1.8
-
 bootJar { enabled = false }
 jar { enabled = true }
-
 
 dependencies {
     compile project(":chatbot-spring-boot-autoconfigure")
     compile project(":messenger:slack")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
