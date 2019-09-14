@@ -1,6 +1,8 @@
 package com.github.kingbbode.messenger.slack;
 
+import allbegray.slack.SlackClientFactory;
 import allbegray.slack.rtm.EventListener;
+import allbegray.slack.rtm.SlackRealTimeMessagingClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.kingbbode.chatbot.core.event.Event;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
@@ -17,12 +19,12 @@ import static allbegray.slack.rtm.Event.MESSAGE;
 public class SlackEventSensor implements EventListener, InitializingBean, DisposableBean {
     private static final String BOT_MESSAGE = "bot_message";
     private static final String SUBTYPE = "subtype";
-    private final SlackRealTimeMessagingClientCustomize slackRealTimeMessagingClient;
+    private final SlackRealTimeMessagingClient slackRealTimeMessagingClient;
     private final SlackDispatcher slackDispatcher;
     private final EventQueue eventQueue;
 
     public SlackEventSensor(String token, SlackDispatcher slackDispatcher, EventQueue eventQueue) {
-        this.slackRealTimeMessagingClient = SlackRealTimeMessagingClientCustomize.createSlackRealTimeMessagingClient(token, null, null);
+        this.slackRealTimeMessagingClient = SlackClientFactory.createSlackRealTimeMessagingClient(token, null, null);
         this.slackDispatcher = slackDispatcher;
         this.eventQueue = eventQueue;
     }
