@@ -62,6 +62,6 @@ public class TaskRunner {
         eventSensors.stream()
                 .map(EventSensor::sensingEvent)
                 .flatMap(Collection::stream)
-                .forEach(event -> this.eventQueue.offer(event));
+                .forEach(this.eventQueue::offer);
     }
 }

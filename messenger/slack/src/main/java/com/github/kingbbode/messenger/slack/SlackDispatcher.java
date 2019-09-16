@@ -19,8 +19,7 @@ public class SlackDispatcher implements Dispatcher<JsonNode>, InitializingBean {
     private final SlackWebApiClient webApiClient;
 
     public SlackDispatcher(String token) {
-        this.webApiClient = SlackClientFactory.createWebApiClient(token)
-        ;
+        this.webApiClient = SlackClientFactory.createWebApiClient(token);
     }
 
     public BrainRequest dispatch(JsonNode message) {
