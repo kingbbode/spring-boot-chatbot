@@ -17,11 +17,9 @@
 
 ## Release Notes
 
-### Version 0.4.0 
+### 0.4.6
 
-*2018-11-10*
-    
-- BOOT 2.x 기반 업데이트
+- Slack RTM Server `GOODBYE` Event 대응
 
 ---
 
