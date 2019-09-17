@@ -15,7 +15,6 @@ import static allbegray.slack.rtm.Event.MESSAGE;
 @Slf4j
 public class SlackEventSensor implements EventListener, InitializingBean, DisposableBean {
     private static final String BOT_MESSAGE = "bot_message";
-    private static final String TYPE = "type";
     private static final String SUBTYPE = "subtype";
     private static final String GOODBYE_MESSAGE = "goodbye";
 
@@ -31,11 +30,13 @@ public class SlackEventSensor implements EventListener, InitializingBean, Dispos
     }
 
     private void refreshSlackClient() {
+        log.info("Slack Client Refresh.");
         if(slackRealTimeMessagingClient != null) {
             this.slackRealTimeMessagingClient.close();
         }
         slackRealTimeMessagingClient = SlackClientFactory.createSlackRealTimeMessagingClient(token, null, null);
         slackRealTimeMessagingClient.addListener(MESSAGE, this);
+        slackRealTimeMessagingClient.addListener(GOODBYE_MESSAGE, message -> refreshSlackClient());
         slackRealTimeMessagingClient.connect();
     }
 
@@ -44,19 +45,7 @@ public class SlackEventSensor implements EventListener, InitializingBean, Dispos
         if(isBot(message)) {
             return;
         }
-        if(isGoodbye(message)) {
-            log.info("Slack Client Refresh.");
-            refreshSlackClient();
-        }
         this.eventQueue.offer(new Event<>(slackDispatcher, message));
-    }
-
-    private boolean isGoodbye(JsonNode message) {
-        JsonNode jsonNode = message.get(TYPE);
-        if(jsonNode == null) {
-            return false;
-        }
-        return GOODBYE_MESSAGE.equals(jsonNode.asText());
     }
 
     private boolean isBot(JsonNode message) {
