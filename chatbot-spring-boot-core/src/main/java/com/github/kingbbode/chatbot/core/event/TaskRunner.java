@@ -2,6 +2,7 @@ package com.github.kingbbode.chatbot.core.event;
 
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,6 +17,7 @@ import java.util.*;
 /**
  * Created by YG on 2016-08-17.
  */
+@Slf4j
 @Service
 @ConditionalOnProperty(prefix = "chatbot", name = "enabled", havingValue = "true")
 public class TaskRunner {
@@ -53,7 +55,11 @@ public class TaskRunner {
 
         @Override
         public void run() {
-            this.event.execute();
+            try {
+                this.event.execute();
+            } catch (Exception e) {
+                log.warn("execute error message={}", e.getMessage(), e);
+            }
         }
     }
 
