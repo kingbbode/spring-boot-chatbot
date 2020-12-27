@@ -10,6 +10,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+
 @Configuration
 @EnableConfigurationProperties(SlackProperties.class)
 @ConditionalOnClass(name = "com.github.kingbbode.messenger.slack.SlackDispatcher")
@@ -18,13 +20,13 @@ public class SlackAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackDispatcher slackDispatcher(SlackProperties slackProperties) {
+    public SlackDispatcher slackDispatcher(SlackProperties slackProperties) throws IOException {
         return new SlackDispatcher(slackProperties.getToken());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackEventSensor slackEventSensor(SlackProperties slackProperties, EventQueue eventQueue) {
+    public SlackEventSensor slackEventSensor(SlackProperties slackProperties, EventQueue eventQueue) throws IOException {
         return new SlackEventSensor(slackProperties.getToken(), slackDispatcher(null), eventQueue);
     }
 }

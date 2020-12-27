@@ -3,7 +3,7 @@ jar { enabled = true }
 
 dependencies {
     compile project(":chatbot-spring-boot-core")
-    compile ("org.telegram:telegrambots:3.6.1")
+    compile ("org.telegram:telegrambots")
     compileOnly("org.projectlombok:lombok")
 }
 

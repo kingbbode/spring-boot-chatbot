@@ -1,46 +1,57 @@
 package com.github.kingbbode.messenger.slack;
 
-import allbegray.slack.SlackClientFactory;
-import allbegray.slack.webapi.SlackWebApiClient;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.slack.api.Slack;
+import com.slack.api.model.event.MessageEvent;
+import com.slack.api.rtm.RTMClient;
+import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.io.IOException;
+
 @Slf4j
-public class SlackDispatcher implements Dispatcher<JsonNode>, InitializingBean {
+public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBean, DisposableBean {
 
     private static final String CHANNEL = "channel";
     private static final String TEXT = "text";
     private static final String USER = "user";
+    private final RTMClient rtm;
 
-    private final SlackWebApiClient webApiClient;
-
-    public SlackDispatcher(String token) {
-        this.webApiClient = SlackClientFactory.createWebApiClient(token);
+    public SlackDispatcher(String token) throws IOException {
+        this.rtm = Slack.getInstance().rtm(token);
     }
 
-    public BrainRequest dispatch(JsonNode message) {
-        String channel = message.get(CHANNEL).asText();
-        String text = message.get(TEXT).asText();
-        String user = message.get(USER).asText();
-
+    @Override
+    public BrainRequest dispatch(MessageEvent message) {
         return BrainRequest.builder()
-                .user(user)
-                .room(channel)
-                .content(text)
+                .user(message.getUser())
+                .room(message.getChannel())
+                .content(message.getText())
                 .build();
     }
 
     @Override
     public void onMessage(BrainResult result) {
-        this.webApiClient.postMessage(result.getRoom(), result.getMessage());
+        rtm.sendMessage(Message.builder()
+            .channel(result.getRoom())
+            .text(result.getMessage())
+            .build()
+            .toJSONString()
+        );
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        rtm.connect();
         log.info("[BOT] Registered SlackDispatcher.");
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        rtm.disconnect();
     }
 }

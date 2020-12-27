@@ -15,14 +15,8 @@ ext {
     set('springCloudVersion', "Greenwich.SR2")
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
 group 'com.github.kingbbode'
-version '0.4.6'
+version '0.4.8'
 
 configure(subprojects.findAll {it.name != 'messenger'}) {
     apply plugin: 'java'
@@ -38,6 +32,22 @@ configure(subprojects.findAll {it.name != 'messenger'}) {
     configurations {
         compileOnly {
             extendsFrom annotationProcessor
+        }
+    }
+
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+        dependencies {
+            dependency "javax.websocket:javax.websocket-api:1.1"
+            dependency "org.glassfish.tyrus.bundles:tyrus-standalone-client:1.17"
+            dependency "com.google.code.gson:gson:2.8.6"
+            dependency "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
+            dependency "com.slack.api:slack-api-client:1.4.1"
+            dependency "com.linecorp.bot:line-bot-spring-boot:1.14.0"
+            dependency "org.telegram:telegrambots:3.6.1"
         }
     }
 

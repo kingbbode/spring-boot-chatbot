@@ -2,7 +2,10 @@ bootJar { enabled = false }
 jar { enabled = true }
 
 dependencies {
+    compile("com.slack.api:slack-api-client")
+    compile("javax.websocket:javax.websocket-api")
+    compile("org.glassfish.tyrus.bundles:tyrus-standalone-client")
+    compile("com.google.code.gson:gson")
     compile project(":chatbot-spring-boot-core")
-    compile("com.github.allbegray:slack-api:1.7.0.RELEASE")
     compileOnly("org.projectlombok:lombok")
 }

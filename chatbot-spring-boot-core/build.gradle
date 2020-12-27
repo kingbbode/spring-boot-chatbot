@@ -2,9 +2,10 @@ bootJar { enabled = false }
 jar { enabled = true }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-aop")
     compile("org.springframework.boot:spring-boot-starter-data-redis")
+    compile("org.apache.httpcomponents:httpclient")
     compile("it.ozimov:embedded-redis:0.7.2")
     compile("org.reflections:reflections:0.9.11")
     compile("org.apache.commons:commons-lang3:3.1")
