@@ -3,6 +3,9 @@ package com.github.kingbbode.chatbot.autoconfigure.messenger.slack;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.messenger.slack.SlackDispatcher;
 import com.github.kingbbode.messenger.slack.SlackEventSensor;
+import com.github.kingbbode.messenger.slack.SlackRTMClient;
+import com.slack.api.Slack;
+import com.slack.api.rtm.RTMClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,6 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.websocket.DeploymentException;
 import java.io.IOException;
 
 @Configuration
@@ -20,13 +24,19 @@ public class SlackAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackDispatcher slackDispatcher(SlackProperties slackProperties) throws IOException {
-        return new SlackDispatcher(slackProperties.getToken());
+    public SlackRTMClient slackRTMClient(SlackProperties slackProperties) throws IOException, DeploymentException {
+        return new SlackRTMClient(slackProperties.getToken());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SlackEventSensor slackEventSensor(SlackProperties slackProperties, EventQueue eventQueue) throws IOException {
-        return new SlackEventSensor(slackProperties.getToken(), slackDispatcher(null), eventQueue);
+    public SlackDispatcher slackDispatcher(SlackRTMClient slackRTMClient) {
+        return new SlackDispatcher(slackRTMClient);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SlackEventSensor slackEventSensor(SlackRTMClient slackRTMClient, SlackDispatcher slackDispatcher, EventQueue eventQueue) {
+        return new SlackEventSensor(slackRTMClient, slackDispatcher, eventQueue);
     }
 }

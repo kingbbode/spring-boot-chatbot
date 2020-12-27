@@ -3,26 +3,19 @@ package com.github.kingbbode.messenger.slack;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
-import com.slack.api.Slack;
 import com.slack.api.model.event.MessageEvent;
-import com.slack.api.rtm.RTMClient;
 import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.IOException;
 
 @Slf4j
-public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBean, DisposableBean {
+public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBean {
+    private final SlackRTMClient slackRTMClient;
 
-    private static final String CHANNEL = "channel";
-    private static final String TEXT = "text";
-    private static final String USER = "user";
-    private final RTMClient rtm;
-
-    public SlackDispatcher(String token) throws IOException {
-        this.rtm = Slack.getInstance().rtm(token);
+    public SlackDispatcher(SlackRTMClient slackRTMClient) {
+        this.slackRTMClient = slackRTMClient;
     }
 
     @Override
@@ -36,22 +29,15 @@ public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBe
 
     @Override
     public void onMessage(BrainResult result) {
-        rtm.sendMessage(Message.builder()
+        slackRTMClient.sendMessage(Message.builder()
             .channel(result.getRoom())
             .text(result.getMessage())
             .build()
-            .toJSONString()
         );
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        rtm.connect();
+    public void afterPropertiesSet() {
         log.info("[BOT] Registered SlackDispatcher.");
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        rtm.disconnect();
     }
 }
