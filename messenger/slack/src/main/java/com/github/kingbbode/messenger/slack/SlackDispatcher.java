@@ -8,10 +8,9 @@ import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.io.IOException;
-
 @Slf4j
 public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBean {
+    private static final String MESSENGER = "SLACK";
     private final SlackRTMClient slackRTMClient;
 
     public SlackDispatcher(SlackRTMClient slackRTMClient) {
@@ -21,6 +20,8 @@ public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBe
     @Override
     public BrainRequest dispatch(MessageEvent message) {
         return BrainRequest.builder()
+                .messenger(MESSENGER)
+                .messageNo(message.getClientMsgId())
                 .user(message.getUser())
                 .room(message.getChannel())
                 .content(message.getText())

@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
 
+    private static final String MESSENGER = "TEAMUP";
     private static final String EVENT_MESSAGE = "chat.message";
-    private static final String EVENT_JOIN = "chat.join";
     private static final int MESSAGE_TYPE = 1;
 
     private final MessageService messageService;
@@ -47,6 +47,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
             return skip();
         }
         BrainRequest brainRequest = BrainRequest.builder()
+                                    .messenger(MESSENGER)
                                     .user(String.valueOf(message.getUser()))
                                     .room(chat.getRoom())
                                     .content(message.getContent()!=null?message.getContent().trim():null)

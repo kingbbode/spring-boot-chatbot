@@ -7,13 +7,13 @@ import com.github.kingbbode.chatbot.core.base.knowledge.brain.KnowledgeBrain;
 import com.github.kingbbode.chatbot.core.base.knowledge.component.KnowledgeComponent;
 import com.github.kingbbode.chatbot.core.base.stat.StatComponent;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
+import com.github.kingbbode.chatbot.core.brain.DistributedEnvironment;
 import com.github.kingbbode.chatbot.core.brain.aop.BrainCellAspect;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactory;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactoryCustomizer;
 import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
-import com.github.kingbbode.chatbot.core.event.DistributedEnvironment;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
 import org.springframework.beans.factory.BeanFactory;
@@ -134,12 +134,11 @@ public class ChatbotAutoConfiguration {
     @ConditionalOnMissingBean
     public TaskRunner taskRunner(
         @Qualifier(EVENT_QUEUE_TREAD_POOL) ThreadPoolTaskExecutor executer,
-        DistributedEnvironment distributedEnvironment,
         EventQueue eventQueue,
         DispatcherBrain dispatcherBrain,
         List<EventSensor> eventSensors
     ){
-        return new TaskRunner(executer, distributedEnvironment, eventQueue, eventSensors, dispatcherBrain);
+        return new TaskRunner(executer, eventQueue, eventSensors, dispatcherBrain);
     }
 
     @Bean
@@ -194,9 +193,10 @@ public class ChatbotAutoConfiguration {
     @ConditionalOnMissingBean
     public DispatcherBrain dispatcherBrain(
         BrainFactory brainFactory,
-        ConversationService conversationService
+        ConversationService conversationService,
+        DistributedEnvironment distributedEnvironment
     ){
-        return new DispatcherBrain(brainFactory, conversationService);
+        return new DispatcherBrain(brainFactory, conversationService, distributedEnvironment);
     }
 
     @Bean

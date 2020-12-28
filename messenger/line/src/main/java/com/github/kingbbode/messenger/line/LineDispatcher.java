@@ -1,7 +1,6 @@
 package com.github.kingbbode.messenger.line;
 
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
-import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -13,6 +12,8 @@ import java.util.Optional;
 
 @Slf4j
 public class LineDispatcher implements InitializingBean {
+
+    private static final String MESSENGER = "LINE";
 
     private DispatcherBrain dispatcherBrain;
 
@@ -26,7 +27,9 @@ public class LineDispatcher implements InitializingBean {
                 .room(event.getReplyToken().trim())
                 .content(event.getMessage().getText())
                 .messageNo(event.getMessage().getId())
+                .messenger(MESSENGER)
                 .build();
+
         BrainResult brainResult = dispatcherBrain.execute(brainRequest);
 
         return Optional.ofNullable(brainResult).map(BrainResult::getMessage).orElse("");

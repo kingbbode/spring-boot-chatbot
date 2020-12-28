@@ -3,7 +3,6 @@ package com.github.kingbbode.chatbot.core.common.request;
 
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
@@ -14,6 +13,7 @@ import org.springframework.util.StringUtils;
 @Getter
 @Setter
 public class BrainRequest {
+    private String messenger;
     private String messageNo;
     private String team;
     private String user;
@@ -22,7 +22,8 @@ public class BrainRequest {
     private Conversation conversation;
 
     @Builder
-    public BrainRequest(String messageNo, String team, String user, String room, String content) {
+    public BrainRequest(String messenger, String messageNo, String team, String user, String room, String content) {
+        this.messenger = messenger;
         this.messageNo = messageNo;
         this.team = team;
         this.user = user;

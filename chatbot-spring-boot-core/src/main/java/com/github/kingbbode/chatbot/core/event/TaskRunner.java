@@ -18,7 +18,6 @@ import java.util.List;
 public class TaskRunner {
 
     private final ThreadPoolTaskExecutor executer;
-    private final DistributedEnvironment distributedEnvironment;
     private final EventQueue eventQueue;
     private final List<EventSensor> eventSensors;
     private final DispatcherBrain brain;

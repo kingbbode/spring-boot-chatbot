@@ -18,6 +18,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 @Slf4j
 public class TelegramEventSensor extends TelegramLongPollingBot implements Dispatcher<Update>, InitializingBean {
 
+    private static final String MESSENGER = "TELEGRAM";
     private final String butUserName;
     private final String botToken;
     private final EventQueue eventQueue;
@@ -59,6 +60,7 @@ public class TelegramEventSensor extends TelegramLongPollingBot implements Dispa
                 .room(String.valueOf(update.getMessage().getChatId()))
                 .content(update.getMessage().getText())
                 .messageNo(String.valueOf(update.getMessage().getChatId()))
+                .messenger(MESSENGER)
                 .build();
     }
 

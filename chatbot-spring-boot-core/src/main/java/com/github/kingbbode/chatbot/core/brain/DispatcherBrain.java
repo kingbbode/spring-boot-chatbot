@@ -20,10 +20,13 @@ import java.lang.reflect.InvocationTargetException;
 public class DispatcherBrain {
     private final BrainFactory brainFactory;
     private final ConversationService conversationService;
+    private final DistributedEnvironment distributedEnvironment;
 
     public BrainResult execute(BrainRequest brainRequest) {
         try {
-            return selectedBrainCell(brainRequest).execute(brainRequest);
+            if(distributedEnvironment.sync(brainRequest)) {
+                return selectedBrainCell(brainRequest).execute(brainRequest);
+            }
         } catch (Exception e) {
             log.warn("execute error -{}", e.getMessage(), e);
         }
