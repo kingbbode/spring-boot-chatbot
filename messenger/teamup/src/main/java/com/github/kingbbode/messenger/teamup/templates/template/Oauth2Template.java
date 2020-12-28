@@ -4,8 +4,6 @@ import com.github.kingbbode.chatbot.core.common.enums.GrantType;
 import com.github.kingbbode.messenger.teamup.Api;
 import com.github.kingbbode.messenger.teamup.TeamUpProperties;
 import com.github.kingbbode.messenger.teamup.oauth2.OAuth2Token;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;

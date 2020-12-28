@@ -1,5 +1,6 @@
 package com.github.kingbbode.chatbot.autoconfigure;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kingbbode.chatbot.core.ChatbotProperties;
 import com.github.kingbbode.chatbot.core.base.BaseBrain;
 import com.github.kingbbode.chatbot.core.base.knowledge.brain.KnowledgeBrain;
@@ -8,12 +9,16 @@ import com.github.kingbbode.chatbot.core.base.stat.StatComponent;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.aop.BrainCellAspect;
 import com.github.kingbbode.chatbot.core.brain.factory.BrainFactory;
+import com.github.kingbbode.chatbot.core.brain.factory.BrainFactoryCustomizer;
 import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
+import com.github.kingbbode.chatbot.core.event.DistributedEnvironment;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.chatbot.core.event.TaskRunner;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -22,6 +27,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -51,8 +59,22 @@ public class ChatbotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BrainFactory brainFactory(){
-        return new BrainFactory();
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BrainFactory brainFactory(
+        BotProperties botProperties,
+        BeanFactory beanFactory,
+        @Autowired(required = false) KnowledgeComponent knowledge,
+        ChatbotProperties chatbotProperties,
+        List<BrainFactoryCustomizer> brainFactoryCustomizers
+    ){
+        return new BrainFactory(botProperties, beanFactory, knowledge, chatbotProperties, brainFactoryCustomizers);
     }
 
     @Bean
@@ -71,8 +93,13 @@ public class ChatbotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ConversationService conversationService(){
-        return new ConversationService();
+    public ConversationService conversationService(
+        Environment environment,
+        RedisTemplate<String, String> redisTemplate,
+        ObjectMapper objectMapper,
+        BotProperties botProperties
+    ){
+        return new ConversationService(environment, redisTemplate, objectMapper, botProperties);
     }
 
     @Bean
@@ -96,29 +123,53 @@ public class ChatbotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskRunner taskRunner(@Autowired(required = false) List<EventSensor> eventSensors){
-        return new TaskRunner(eventQueue(), eventSensors, dispatcherBrain());
+    public DistributedEnvironment distributedEnvironment(
+        BotProperties botProperties,
+        RedisTemplate<String, String> redisTemplate
+    ) {
+        return new DistributedEnvironment(botProperties, redisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TaskRunner taskRunner(
+        @Qualifier(EVENT_QUEUE_TREAD_POOL) ThreadPoolTaskExecutor executer,
+        DistributedEnvironment distributedEnvironment,
+        EventQueue eventQueue,
+        DispatcherBrain dispatcherBrain,
+        List<EventSensor> eventSensors
+    ){
+        return new TaskRunner(executer, distributedEnvironment, eventQueue, eventSensors, dispatcherBrain);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chatbot", name = "enableBase", havingValue = "true", matchIfMissing = true)
-    public BaseBrain baseBrain(){
-        return new BaseBrain();
+    public BaseBrain baseBrain(
+        BrainFactory brainFactory,
+        @Autowired(required = false) KnowledgeComponent knowledgeComponent,
+        StatComponent statComponent
+    ){
+        return new BaseBrain(brainFactory, knowledgeComponent, statComponent);
     }
 
     @Bean
     @ConditionalOnMissingBean    
     @ConditionalOnProperty(prefix = "chatbot", name = "enableKnowledge", havingValue = "true")
-    public KnowledgeBrain knowledgeBrain(){
-        return new KnowledgeBrain();
+    public KnowledgeBrain knowledgeBrain(KnowledgeComponent knowledgeComponent){
+        return new KnowledgeBrain(knowledgeComponent);
     }
     
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "chatbot", name = "enableKnowledge", havingValue = "true")
-    public KnowledgeComponent knowledgeComponent(){
-        return new KnowledgeComponent();
+    public KnowledgeComponent knowledgeComponent(
+        RedisTemplate<String, String> redisTemplate,
+        ObjectMapper objectMapper,
+        BotProperties botProperties,
+        StatComponent statComponent
+    ){
+        return new KnowledgeComponent(redisTemplate, objectMapper, botProperties, statComponent);
     }
     
     @Bean
@@ -141,13 +192,20 @@ public class ChatbotAutoConfiguration {
     
     @Bean
     @ConditionalOnMissingBean
-    public DispatcherBrain dispatcherBrain(){
-        return new DispatcherBrain();
+    public DispatcherBrain dispatcherBrain(
+        BrainFactory brainFactory,
+        ConversationService conversationService
+    ){
+        return new DispatcherBrain(brainFactory, conversationService);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public BrainCellAspect brainCellAspect(){
-        return new BrainCellAspect();
+    public BrainCellAspect brainCellAspect(
+        ConversationService conversationService,
+        BrainFactory brainFactory,
+        StatComponent statComponent
+    ){
+        return new BrainCellAspect(conversationService, brainFactory, statComponent);
     }
 }

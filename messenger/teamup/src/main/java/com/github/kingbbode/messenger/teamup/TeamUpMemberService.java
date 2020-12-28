@@ -4,7 +4,6 @@ import com.github.kingbbode.messenger.teamup.response.OrganigrammeResponse;
 import com.github.kingbbode.messenger.teamup.response.RoomInfoResponse;
 import com.github.kingbbode.messenger.teamup.templates.template.AuthTemplate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;

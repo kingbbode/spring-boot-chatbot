@@ -11,13 +11,9 @@ import com.github.kingbbode.messenger.teamup.response.MessageResponse;
 import com.github.kingbbode.messenger.teamup.response.RoomCreateResponse;
 import com.github.kingbbode.messenger.teamup.templates.BaseTemplate;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestOperations;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by YG on 2016-10-13.

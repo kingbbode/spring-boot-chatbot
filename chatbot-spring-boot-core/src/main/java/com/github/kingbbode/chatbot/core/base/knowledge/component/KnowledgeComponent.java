@@ -5,11 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kingbbode.chatbot.core.base.stat.StatComponent;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +20,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by YG on 2016-04-12.
  */
+@RequiredArgsConstructor
 public class KnowledgeComponent {
 
-    @Resource(name="redisTemplate")
-    private HashOperations<String, String, String> hashOperations;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-    
-    @Autowired
-    private BotProperties botProperties;
-    
-    @Autowired
-    private StatComponent statComponent;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
+    private final BotProperties botProperties;
+    private final StatComponent statComponent;
 
     private static final String REDIS_KEY_KNOWLEDGE = ":knowledge";
 
@@ -43,6 +37,7 @@ public class KnowledgeComponent {
     public void init() throws IOException {
         this.key = botProperties.getName() + REDIS_KEY_KNOWLEDGE;
         Map<String, List<String>> map = new ConcurrentHashMap<>();
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         Map<String, String> entries = hashOperations.entries(this.key);
         for(Map.Entry<String, String> entry : entries.entrySet()){
             map.put(entry.getKey(), objectMapper.readValue(entry.getValue(), new TypeReference<List<String>>() {
@@ -78,7 +73,7 @@ public class KnowledgeComponent {
                 return command + " 명령어에 습득할 수 있는 머리가 꽉 차서 못하겠습니다";
             }
             list.add(content);
-            hashOperations.put(this.key, command, objectMapper.writeValueAsString(list));
+            redisTemplate.opsForHash().put(this.key, command, objectMapper.writeValueAsString(list));
             return command + " 명령어에 지식을 하나 더 습득했습니다";
         } else {
             if (knowledge.size() > 10000) {
@@ -87,7 +82,7 @@ public class KnowledgeComponent {
             List<String> list = new ArrayList<>();
             list.add(content);
             knowledge.put(command, list);
-            hashOperations.put(this.key, command, objectMapper.writeValueAsString(list));
+            redisTemplate.opsForHash().put(this.key, command, objectMapper.writeValueAsString(list));
             return "새로운 지식을 습득했습니다. \n 사용법 : " + command;
         }
     }
@@ -95,7 +90,7 @@ public class KnowledgeComponent {
     public String forgetKnowledge(String command) {
         if (knowledge.containsKey(command)) {
             knowledge.remove(command);
-            hashOperations.delete(this.key, command);
+            redisTemplate.opsForHash().delete(this.key, command);
             return command + "를 까먹었습니다";
         } else {
             return "그런건 원래 모릅니다";

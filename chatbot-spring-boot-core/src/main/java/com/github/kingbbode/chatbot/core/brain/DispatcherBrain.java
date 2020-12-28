@@ -6,9 +6,8 @@ import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -16,20 +15,17 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by YG on 2017-01-23.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class DispatcherBrain {
-    private static final Logger logger = LoggerFactory.getLogger(BrainFactory.class);
-
-    @Autowired
-    private BrainFactory brainFactory;
-    
-    @Autowired
-    private ConversationService conversationService;
+    private final BrainFactory brainFactory;
+    private final ConversationService conversationService;
 
     public BrainResult execute(BrainRequest brainRequest) {
         try {
             return selectedBrainCell(brainRequest).execute(brainRequest);
         } catch (Exception e) {
-            logger.warn("execute error -{}", e);
+            log.warn("execute error -{}", e.getMessage(), e);
         }
         return null;
     }

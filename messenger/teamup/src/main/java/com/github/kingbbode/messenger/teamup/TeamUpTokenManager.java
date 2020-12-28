@@ -4,9 +4,6 @@ import com.github.kingbbode.messenger.teamup.oauth2.OAuth2Token;
 import com.github.kingbbode.messenger.teamup.templates.template.Oauth2Template;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 

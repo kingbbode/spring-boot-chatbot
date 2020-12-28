@@ -6,22 +6,18 @@ import com.github.kingbbode.chatbot.core.common.annotations.Brain;
 import com.github.kingbbode.chatbot.core.common.annotations.BrainCell;
 import com.github.kingbbode.chatbot.core.common.exception.ArgumentInvalidException;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by YG-MAC on 2017. 1. 26..
  */
+@Slf4j
 @Brain
+@RequiredArgsConstructor
 public class KnowledgeBrain {
 
-    @Autowired
-    private KnowledgeComponent knowledgeComponent;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final KnowledgeComponent knowledgeComponent;
 
     @BrainCell(key = "학습", explain = "명령어 학습시키기", function = "addKnowledge")
     public String addKnowledge(BrainRequest brainRequest) throws JsonProcessingException {
@@ -36,7 +32,7 @@ public class KnowledgeBrain {
     
             @BrainCell(parent = "addKnowledge2", function = "addKnowledge3", example = "입력하신 내용에 오류가 있습니다. 다시 입력해주세요.")
             public String addKnowledge3(BrainRequest brainRequest) {
-                logger.info("addKnowledge user :{}, key : {}, content : {}", brainRequest.getUser(), brainRequest.getConversation().getParam().get("key"), brainRequest.getContent());
+                log.info("addKnowledge user :{}, key : {}, content : {}", brainRequest.getUser(), brainRequest.getConversation().getParam().get("key"), brainRequest.getContent());
                 try {
                     return knowledgeComponent.addKnowledge(brainRequest.getConversation().getParam().get("key"), brainRequest.getContent());
                 } catch (JsonProcessingException e) {

@@ -11,5 +11,7 @@ dependencies {
     compile("org.apache.commons:commons-lang3:3.1")
     compile("joda-time:joda-time:2.9.3")
     compile("org.projectlombok:lombok")
+    compile("net.javacrumbs.shedlock:shedlock-spring:4.19.1")
+    compile("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.19.1")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

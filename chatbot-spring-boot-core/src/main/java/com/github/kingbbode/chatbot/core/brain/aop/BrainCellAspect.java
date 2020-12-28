@@ -9,30 +9,22 @@ import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainCellResult;
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 /**
  * Created by YG-MAC on 2017. 1. 26..
  */
 @Aspect
+@RequiredArgsConstructor
 public class BrainCellAspect {
-    
-    @Autowired
-    private ConversationService conversationService;
-    
-    @Autowired
-    private BrainFactory brainFactory;
-
-    @Autowired
-    private StatComponent statComponent;
+    private final ConversationService conversationService;
+    private final BrainFactory brainFactory;
+    private final StatComponent statComponent;
 
     @Around("@annotation(com.github.kingbbode.chatbot.core.common.annotations.BrainCell)")
     public Object checkArgLength(ProceedingJoinPoint joinPoint) throws Throwable {

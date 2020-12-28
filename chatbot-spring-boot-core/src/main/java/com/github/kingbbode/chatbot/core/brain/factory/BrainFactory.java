@@ -9,15 +9,14 @@ import com.github.kingbbode.chatbot.core.common.annotations.Brain;
 import com.github.kingbbode.chatbot.core.common.annotations.BrainCell;
 import com.github.kingbbode.chatbot.core.common.properties.BotProperties;
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
@@ -32,26 +31,15 @@ import static com.github.kingbbode.chatbot.core.brain.cell.AbstractBrainCell.NOT
 /**
  * Created by YG on 2017-01-23.
  */
+@Slf4j
+@RequiredArgsConstructor
 public class BrainFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(BrainFactory.class);
-
-    @Autowired
-    private BotProperties botProperties;
-    
-    @Autowired
-    private BeanFactory beanFactory;
-    
-    @Autowired(required = false)
-    private KnowledgeComponent knowledge;
-    
-    @Autowired
-    private ChatbotProperties chatbotProperties;
-
-    @Autowired(required = false)
-    private List<BrainFactoryCustomizer> brainFactoryCustomizers;
-
-
+    private final BotProperties botProperties;
+    private final BeanFactory beanFactory;
+    private final KnowledgeComponent knowledge;
+    private final ChatbotProperties chatbotProperties;
+    private final List<BrainFactoryCustomizer> brainFactoryCustomizers;
 
     private KnowledgeBrainCell knowledgeBrainCell;
     
@@ -100,7 +88,7 @@ public class BrainFactory {
             });
             conversationInfo.put(key2, info);
         });
-        logger.info("Load Brain command : {}, key : {}, conversation : {}", command.size(), key.size(), conversationInfo.size());
+        log.info("Load Brain command : {}, key : {}, conversation : {}", command.size(), key.size(), conversationInfo.size());
         this.commandMap = command;
         this.keyMap = key;
         this.conversationInfoMap = conversationInfo;
