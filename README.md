@@ -86,7 +86,7 @@ public String echo2(BrainRequest brainRequest) {
     return  brainRequest.getContent();
 }
 
-@BrainCell(function = "echo-end-1", key= "저장" parent = "echo-start")
+@BrainCell(function = "echo-end-2", key= "저장" parent = "echo-start")
 public String echo2(BrainRequest brainRequest) {
     return  brainRequest.getContent();
 }
