@@ -31,32 +31,16 @@ public class BrainRequest {
         this.content = content;
     }
 
-    /*
-    public BrainRequest(EventResponse.Event.Chat chat, MessageResponse.Message message) {
-        this.user = String.valueOf(message.getUser());
-        this.room = chat.getRoom();
-        this.content = message.getContent()!=null?message.getContent().trim():null;
-        this.messageNo = String.valueOf(message.getMsg());
-        this.team = String.valueOf(chat.getTeam());
-    }
-
-    public BrainRequest(String user, String room, String content) {
-        this.user = user;
-        this.room = room;
-        this.content = content;
-    }*/
-
     public boolean isValid(){
         return !StringUtils.isEmpty(content);
     }
 
     @Override
     public String toString() {
-        return "BrainRequest{\n" +
-                "team=" + team + "\n" + 
-                "message no=" + messageNo + "\n" + 
-                "user='" + user + "\n" +
-                "room='" + room + "\n" +
-                "\n}";
+        return "messenger=" + messenger + "\n" +
+            ", messageNo=" + messageNo + "\n" +
+            ", team=" + team + "\n" +
+            ", user=" + user + "\n" +
+            ", room=" + room;
     }
 }
