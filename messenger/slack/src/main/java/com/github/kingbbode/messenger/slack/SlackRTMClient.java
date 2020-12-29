@@ -1,7 +1,9 @@
 package com.github.kingbbode.messenger.slack;
 
 import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.model.event.Event;
 import com.slack.api.model.event.GoodbyeEvent;
 import com.slack.api.rtm.RTMClient;
@@ -13,6 +15,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.websocket.DeploymentException;
@@ -23,9 +26,11 @@ import java.util.Objects;
 @Slf4j
 public class SlackRTMClient extends RTMEventHandler<GoodbyeEvent> implements InitializingBean, DisposableBean {
 	private final RTMClient rtm;
+	private final MethodsClient methodsClient;
 
 	public SlackRTMClient(String token) throws IOException, DeploymentException {
 		this.rtm = Slack.getInstance().rtm(token);
+		this.methodsClient = Slack.getInstance().methods(token);
 		rtm.connect();
 		log.info("[BOT] Connect Slack BOT. {}", token);
 	}
@@ -45,7 +50,21 @@ public class SlackRTMClient extends RTMEventHandler<GoodbyeEvent> implements Ini
 		if(Objects.isNull(message)  || StringUtils.isEmpty(message.getChannel())) {
 			return;
 		}
-		rtm.sendMessage(message.toJSONString());
+		if(!CollectionUtils.isEmpty(message.getBlocks()) || !CollectionUtils.isEmpty(message.getAttachments())) {
+			try {
+				methodsClient.chatPostMessage(ChatPostMessageRequest.builder()
+					.channel(message.getChannel())
+					.text(message.getText())
+					.blocks(message.getBlocks())
+					.attachments(message.getAttachments())
+					.build()
+				);
+			} catch (IOException | SlackApiException e) {
+				log.warn("slack chat post failed. {}", e.getMessage());
+			}
+		} else {
+			rtm.sendMessage(message.toJSONString());
+		}
 	}
 
 	@Override
