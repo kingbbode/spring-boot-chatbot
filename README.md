@@ -17,9 +17,13 @@
 
 ## Release Notes
 
-### 0.4.6
+### 0.6.0
 
-- Slack RTM Server `GOODBYE` Event 대응
+- Support Distribute Environment.
+
+### 0.5.0
+
+- Slack Library Change (allbegray -> slack sdk)
 
 ---
 
