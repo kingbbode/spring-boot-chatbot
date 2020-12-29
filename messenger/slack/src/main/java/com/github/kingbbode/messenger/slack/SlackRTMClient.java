@@ -42,7 +42,7 @@ public class SlackRTMClient extends RTMEventHandler<GoodbyeEvent> implements Ini
 	}
 
 	public void sendMessage(Message message) {
-		if(Objects.isNull(message)  || StringUtils.isEmpty(message.getText())) {
+		if(Objects.isNull(message)  || StringUtils.isEmpty(message.getChannel())) {
 			return;
 		}
 		rtm.sendMessage(message.toJSONString());
