@@ -13,6 +13,7 @@ import com.slack.api.rtm.RTMEventsDispatcherFactory;
 import com.slack.api.rtm.message.Message;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.tyrus.core.l10n.LocalizationMessages;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.CollectionUtils;
@@ -63,20 +64,31 @@ public class SlackRTMClient extends RTMEventHandler<GoodbyeEvent> implements Ini
 				log.warn("slack chat post failed. {}", e.getMessage());
 			}
 		} else {
-			rtm.sendMessage(message.toJSONString());
+			try {
+				rtm.sendMessage(message.toJSONString());
+			} catch (IllegalStateException e) {
+				if(LocalizationMessages.CONNECTION_HAS_BEEN_CLOSED().equals(e.getMessage())) {
+					handle(null);
+					sendMessage(message);
+				}
+			}
 		}
 	}
 
 	@Override
 	@SneakyThrows
 	public void handle(GoodbyeEvent event) {
+		reconnect();
+	}
+
+	private void reconnect() throws InterruptedException {
 		try {
 			rtm.reconnect();
 			log.info("reconnect succeed.");
 		} catch (IOException | DeploymentException | URISyntaxException | SlackApiException e) {
 			log.error("reconnect failed. message={}", e.getMessage(), e);
-			Thread.sleep(10_000);
-			handle(event);
+			Thread.sleep(1_000);
+			reconnect();
 		}
 	}
 
