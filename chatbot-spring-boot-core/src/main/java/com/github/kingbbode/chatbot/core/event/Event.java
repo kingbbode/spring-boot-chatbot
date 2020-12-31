@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by YG on 2017-07-10.
@@ -29,7 +30,6 @@ public class Event<T> {
         this.brain = brain;
     }
 
-    //TODO: 결과를 반환한다.
     public void execute(){
         try {
             BrainRequest request = dispatcher.dispatch(item);
@@ -37,7 +37,7 @@ public class Event<T> {
                 return;
             }
             BrainResult result = brain.execute(request);
-            if(ObjectUtils.isEmpty(result)) {
+            if(ObjectUtils.isEmpty(result) || StringUtils.isEmpty(result.getMessage())) {
                 return;
             }
             dispatcher.onMessage(request, result);
