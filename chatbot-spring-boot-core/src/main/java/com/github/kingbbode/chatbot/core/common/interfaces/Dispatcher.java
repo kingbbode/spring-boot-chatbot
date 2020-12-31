@@ -9,7 +9,7 @@ import com.github.kingbbode.chatbot.core.event.EmptyResultException;
  */
 public interface Dispatcher<T> {
     BrainRequest dispatch(T event);
-    void onMessage(BrainResult result);
+    void onMessage(BrainRequest request, BrainResult result);
     default BrainRequest skip() {
         throw new EmptyResultException();
     }

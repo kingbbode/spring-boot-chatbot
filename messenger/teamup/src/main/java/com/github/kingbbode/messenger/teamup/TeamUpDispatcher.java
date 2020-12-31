@@ -36,7 +36,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
     }
 
     @Override
-    public void onMessage(BrainResult result) {
+    public void onMessage(BrainRequest request, BrainResult result) {
         send(result);
     }
 

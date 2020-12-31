@@ -4,11 +4,9 @@ import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -42,7 +40,7 @@ public class Event<T> {
             if(ObjectUtils.isEmpty(result)) {
                 return;
             }
-            dispatcher.onMessage(result);
+            dispatcher.onMessage(request, result);
         } catch (EmptyResultException e) {
             //noop
         }

@@ -29,10 +29,10 @@ public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBe
     }
 
     @Override
-    public void onMessage(BrainResult result) {
+    public void onMessage(BrainRequest brainRequest, BrainResult result) {
         slackRTMClient.sendMessage(Message.builder()
             .channel(result.getRoom())
-            .text(result.getMessage())
+            .text("<@" + brainRequest.getUser() + ">\n" + result.getMessage())
             .build()
         );
     }

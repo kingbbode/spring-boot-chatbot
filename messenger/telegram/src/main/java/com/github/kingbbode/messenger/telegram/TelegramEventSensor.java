@@ -65,7 +65,7 @@ public class TelegramEventSensor extends TelegramLongPollingBot implements Dispa
     }
 
     @Override
-    public void onMessage(BrainResult result) {
+    public void onMessage(BrainRequest brainRequest, BrainResult result) {
         try {
             sendApiMethod(new SendMessage(result.getRoom(), result.getMessage()));
         } catch (TelegramApiException e) {
