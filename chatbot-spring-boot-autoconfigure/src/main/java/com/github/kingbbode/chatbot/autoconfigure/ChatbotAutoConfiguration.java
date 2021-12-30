@@ -6,6 +6,7 @@ import com.github.kingbbode.chatbot.core.base.BaseBrain;
 import com.github.kingbbode.chatbot.core.base.knowledge.brain.KnowledgeBrain;
 import com.github.kingbbode.chatbot.core.base.knowledge.component.KnowledgeComponent;
 import com.github.kingbbode.chatbot.core.base.stat.StatComponent;
+import com.github.kingbbode.chatbot.core.brain.DefaultDispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.brain.DistributedEnvironment;
 import com.github.kingbbode.chatbot.core.brain.aop.BrainCellAspect;
@@ -135,10 +136,9 @@ public class ChatbotAutoConfiguration {
     public TaskRunner taskRunner(
         @Qualifier(EVENT_QUEUE_TREAD_POOL) ThreadPoolTaskExecutor executer,
         EventQueue eventQueue,
-        DispatcherBrain dispatcherBrain,
         List<EventSensor> eventSensors
     ){
-        return new TaskRunner(executer, eventQueue, eventSensors, dispatcherBrain);
+        return new TaskRunner(executer, eventQueue, eventSensors);
     }
 
     @Bean
@@ -196,7 +196,7 @@ public class ChatbotAutoConfiguration {
         ConversationService conversationService,
         DistributedEnvironment distributedEnvironment
     ){
-        return new DispatcherBrain(brainFactory, conversationService, distributedEnvironment);
+        return new DefaultDispatcherBrain(brainFactory, conversationService, distributedEnvironment);
     }
 
     @Bean

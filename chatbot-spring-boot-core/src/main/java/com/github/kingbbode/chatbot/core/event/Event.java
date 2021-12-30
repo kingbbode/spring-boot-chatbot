@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Created by YG on 2017-07-10.
@@ -21,9 +20,10 @@ public class Event<T> {
     private T item;
     private DispatcherBrain brain;
 
-    public Event(Dispatcher<T> dispatcher, T item) {
+    public Event(Dispatcher<T> dispatcher, T item, DispatcherBrain brain) {
         this.dispatcher = dispatcher;
         this.item = item;
+        this.brain = brain;
     }
 
     protected void setBrain(DispatcherBrain brain) {
@@ -37,7 +37,7 @@ public class Event<T> {
                 return;
             }
             BrainResult result = brain.execute(request);
-            if(ObjectUtils.isEmpty(result) || StringUtils.isEmpty(result.getMessage())) {
+            if(ObjectUtils.isEmpty(result)) {
                 return;
             }
             dispatcher.onMessage(request, result);

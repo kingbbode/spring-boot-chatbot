@@ -2,7 +2,7 @@ bootJar { enabled = false }
 jar { enabled = true }
 
 dependencies {
-    compile("com.slack.api:slack-api-client")
+    compile("com.slack.api:bolt-socket-mode")
     compile("javax.websocket:javax.websocket-api")
     compile("org.glassfish.tyrus.bundles:tyrus-standalone-client")
     compile("com.google.code.gson:gson")

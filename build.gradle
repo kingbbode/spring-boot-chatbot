@@ -16,7 +16,7 @@ ext {
 }
 
 group 'com.github.kingbbode'
-version '0.6.6'
+version '0.7.0'
 
 configure(subprojects.findAll {it.name != 'messenger'}) {
     apply plugin: 'java'
@@ -46,6 +46,7 @@ configure(subprojects.findAll {it.name != 'messenger'}) {
             dependency "com.google.code.gson:gson:2.8.6"
             dependency "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
             dependency "com.slack.api:slack-api-client:1.16.0"
+            dependency "com.slack.api:bolt-socket-mode:1.16.0"
             dependency "com.linecorp.bot:line-bot-spring-boot:1.14.0"
             dependency "org.telegram:telegrambots:3.6.1"
         }

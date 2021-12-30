@@ -3,5 +3,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.github.kingbbode.chatbot.autoconfigure.ChatbotAutoConfiguration,\
 com.github.kingbbode.chatbot.autoconfigure.messenger.slack.SlackAutoConfiguration,\
 com.github.kingbbode.chatbot.autoconfigure.messenger.telegram.TelegramAutoConfiguration,\
-com.github.kingbbode.chatbot.autoconfigure.messenger.teamup.TeamUpAutoConfiguration,\
 com.github.kingbbode.chatbot.autoconfigure.messenger.line.LineAutoConfiguration

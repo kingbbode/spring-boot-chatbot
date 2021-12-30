@@ -5,8 +5,8 @@ import com.github.kingbbode.chatbot.core.common.exception.ArgumentInvalidExcepti
 import com.github.kingbbode.chatbot.core.common.exception.BrainException;
 import com.github.kingbbode.chatbot.core.common.exception.InvalidReturnTypeException;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainCellResult;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,49 +41,46 @@ public class CommonBrainCell extends AbstractBrainCell {
     @Override
     public BrainResult execute(BrainRequest brainRequest) {
         if (!inject()) {
-            return BrainResult.Builder.FAILED.room(brainRequest.getRoom()).build();
+            return DefaultBrainResult.Builder.FAILED.room(brainRequest.getRoom()).build();
         }
         Object result;
         try {
             result = active.invoke(object, brainRequest);
         }catch(Throwable e){
             if(e.getCause() instanceof BrainException){
-                return BrainResult.builder()
+                return DefaultBrainResult.builder()
                         .message(e.getCause().getMessage())
                         .room(brainRequest.getRoom())
-                        .type(BrainResult.DEFAULT_RESULT_TYPE)
                         .build();
             }else if(e.getCause() instanceof ArgumentInvalidException){
-                return BrainResult.builder()
+                return DefaultBrainResult.builder()
                         .message(active.getAnnotation(BrainCell.class).example())
                         .room(brainRequest.getRoom())
-                        .type(BrainResult.DEFAULT_RESULT_TYPE)
                         .build();
             }else if(e.getCause() instanceof InvalidReturnTypeException){
-                return BrainResult.builder()
+                return DefaultBrainResult.builder()
                         .message("Method Return Type Exception!")
                         .room(brainRequest.getRoom())
-                        .type(BrainResult.DEFAULT_RESULT_TYPE)
                         .build();
             }
-            return BrainResult.builder()
+            return DefaultBrainResult.builder()
                     .message("Server Error : " + e.getMessage())
                     .room(brainRequest.getRoom())
-                    .type(BrainResult.DEFAULT_RESULT_TYPE)
                     .build();
         }
-        if(result instanceof BrainCellResult){
-            return BrainResult.builder()
-                    .result((BrainCellResult) result)
-                    .type(brain.type())
+        if(result instanceof String) {
+            return DefaultBrainResult.builder()
+                    .message((String) result)
+                    .room(brainRequest.getRoom())
                     .build();
-        }        
-        
-        return BrainResult.builder()
-                .message((String) result)
-                .room(brainRequest.getRoom())
-                .type(brain.type())
-                .build();
+        } else if(result instanceof BrainResult) {
+            return (BrainResult) result;
+        }
+
+        return DefaultBrainResult.builder()
+            .room(brainRequest.getRoom())
+            .message("Not Support Result Type.")
+            .build();
     }
 
     private boolean inject() {

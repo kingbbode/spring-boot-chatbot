@@ -4,7 +4,6 @@ jar { enabled = true }
 dependencies {
     compile project(":chatbot-spring-boot-core")
     compileOnly project(":messenger:line")
-    compileOnly project(":messenger:teamup")
     compileOnly project(":messenger:telegram")
     compileOnly project(":messenger:slack")
 }

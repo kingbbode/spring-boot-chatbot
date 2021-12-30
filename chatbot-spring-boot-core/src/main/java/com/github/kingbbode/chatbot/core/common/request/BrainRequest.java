@@ -15,17 +15,15 @@ import org.springframework.util.StringUtils;
 public class BrainRequest {
     private String messenger;
     private String messageNo;
-    private String team;
     private String user;
     private String room;
     private String content;
     private Conversation conversation;
 
     @Builder
-    public BrainRequest(String messenger, String messageNo, String team, String user, String room, String content) {
+    public BrainRequest(String messenger, String messageNo, String user, String room, String content) {
         this.messenger = messenger;
         this.messageNo = messageNo;
-        this.team = team;
         this.user = user;
         this.room = room;
         this.content = content;
@@ -39,7 +37,6 @@ public class BrainRequest {
     public String toString() {
         return "messenger=" + messenger + "\n" +
             ", messageNo=" + messageNo + "\n" +
-            ", team=" + team + "\n" +
             ", user=" + user + "\n" +
             ", room=" + room;
     }

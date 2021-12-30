@@ -1,5 +1,6 @@
 package com.github.kingbbode.chatbot.autoconfigure.messenger.telegram;
 
+import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import com.github.kingbbode.messenger.telegram.TelegramBotsApiWrapper;
 import com.github.kingbbode.messenger.telegram.TelegramEventSensor;
@@ -28,13 +29,17 @@ public class TelegramAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TelegramEventSensor telegramEventSensor(EventQueue eventQueue, TelegramProperties telegramProperties) {
-        return new TelegramEventSensor(eventQueue, telegramProperties.getName(), telegramProperties.getToken());
+    public TelegramEventSensor telegramEventSensor(
+        EventQueue eventQueue,
+        DispatcherBrain dispatcherBrain,
+        TelegramProperties telegramProperties
+    ) {
+        return new TelegramEventSensor(eventQueue, dispatcherBrain, telegramProperties.getName(), telegramProperties.getToken());
     }
 
     @Bean
     @ConditionalOnMissingBean(TelegramBotsApi.class)
     public TelegramBotsApi telegramBotsApi() throws TelegramApiRequestException {
-        return new TelegramBotsApiWrapper(telegramEventSensor(null, null));
+        return new TelegramBotsApiWrapper(telegramEventSensor(null, null, null));
     }
 }

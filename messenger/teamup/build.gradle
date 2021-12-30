@@ -1,8 +1,0 @@
-bootJar { enabled = false }
-jar { enabled = true }
-
-dependencies {
-    compile project(":chatbot-spring-boot-core")
-    compileOnly("org.projectlombok:lombok")
-}
-

@@ -20,5 +20,4 @@ public @interface BrainCell {
     String example() default "";
     String function();
     boolean cancelable() default true;
-    String type() default "message";
 }

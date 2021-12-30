@@ -1,6 +1,5 @@
 package com.github.kingbbode.chatbot.core.event;
 
-import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.interfaces.EventSensor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,23 +16,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskRunner {
 
-    private final ThreadPoolTaskExecutor executer;
+    private final ThreadPoolTaskExecutor executor;
     private final EventQueue eventQueue;
     private final List<EventSensor> eventSensors;
-    private final DispatcherBrain brain;
 
     @Scheduled(fixedDelay = 10)
     private void execute(){
         while(eventQueue.hasNext()){
-            Event event = eventQueue.poll();
-            event.setBrain(brain);
-            executer.execute(new FetcherTask(event));
+            Event<?> event = eventQueue.poll();
+            executor.execute(new FetcherTask(event));
         }
     }
     
     public static class FetcherTask implements Runnable {
-        Event event;
-        FetcherTask(Event event) {
+        Event<?> event;
+        FetcherTask(Event<?> event) {
             this.event = event;
         }
 

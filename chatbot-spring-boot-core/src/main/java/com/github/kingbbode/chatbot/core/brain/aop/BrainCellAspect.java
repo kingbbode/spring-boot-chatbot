@@ -6,7 +6,8 @@ import com.github.kingbbode.chatbot.core.brain.factory.BrainFactory;
 import com.github.kingbbode.chatbot.core.common.annotations.BrainCell;
 import com.github.kingbbode.chatbot.core.common.exception.InvalidReturnTypeException;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainCellResult;
+import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.SimpleMessageBrainResult;
 import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import com.github.kingbbode.chatbot.core.conversation.ConversationService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class BrainCellAspect {
         }
         Object object =  joinPoint.proceed();
 
-        if(!(object instanceof String) && !(object instanceof BrainCellResult) ){
+        if(!(object instanceof String) && !(object instanceof BrainResult) ){
             throw new InvalidReturnTypeException(new Throwable());
         }
         
@@ -58,8 +59,8 @@ public class BrainCellAspect {
         }
         if(object instanceof String){
             object += "\n\n상태를 취소하려면 '취소'를 입력해주세요.\n30초 동안 아무 작업이 없을 시 자동 초기화됩니다.";
-        }else if(object instanceof BrainCellResult){
-            ((BrainCellResult) object).comment("\n상태를 취소하려면 '취소'를 입력해주세요.\n30초 동안 아무 작업이 없을 시 자동 초기화됩니다.");
+        }else if(object instanceof SimpleMessageBrainResult){
+            ((SimpleMessageBrainResult) object).comment("\n상태를 취소하려면 '취소'를 입력해주세요.\n30초 동안 아무 작업이 없을 시 자동 초기화됩니다.");
         }
         return object;
     }

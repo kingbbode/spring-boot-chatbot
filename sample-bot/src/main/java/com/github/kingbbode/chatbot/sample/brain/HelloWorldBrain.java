@@ -3,7 +3,15 @@ package com.github.kingbbode.chatbot.sample.brain;
 import com.github.kingbbode.chatbot.core.common.annotations.Brain;
 import com.github.kingbbode.chatbot.core.common.annotations.BrainCell;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
+import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
+import com.slack.api.model.block.ActionsBlock;
+import com.slack.api.model.block.SectionBlock;
+import com.slack.api.model.block.composition.MarkdownTextObject;
+import com.slack.api.model.block.composition.PlainTextObject;
+import com.slack.api.model.block.element.ButtonElement;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,5 +67,51 @@ public class HelloWorldBrain {
     public String record5(BrainRequest brainRequest) {
         map.put(brainRequest.getConversation().getParam().get("key"), brainRequest.getContent());
         return  "저장했다";
+    }
+
+
+
+    @BrainCell(key="슬랙테스트", function = "slack")
+    public SlackMessageBrainResult slack(BrainRequest brainRequest) {
+        return SlackMessageBrainResult.builder()
+            .room(brainRequest.getRoom())
+            .blocks(
+                Arrays.asList(
+                    ActionsBlock.builder()
+                        .elements(
+                            Collections.singletonList(
+                                ButtonElement.builder()
+                                    .text(PlainTextObject.builder()
+                                        .text("Farmhouse")
+                                        .emoji(true)
+                                        .build()
+                                    )
+                                    .value("king")
+                                    .actionId("ACTION1")
+                                    .build()
+                            )
+                        )
+                        .build(),
+                    SectionBlock.builder()
+                        .text(
+                            MarkdownTextObject.builder()
+                            .text("This is a section block with a button.")
+                            .build()
+                        )
+                        .accessory(
+                            ButtonElement.builder()
+                                .text(PlainTextObject.builder()
+                                    .text("Click Me")
+                                    .emoji(true)
+                                    .build()
+                                )
+                                .value("bbode")
+                                .actionId("ACTION2")
+                                .build()
+                        )
+                        .build()
+                )
+            )
+            .build();
     }
 }

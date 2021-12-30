@@ -2,7 +2,7 @@ package com.github.kingbbode.chatbot.core.brain.cell;
 
 import com.github.kingbbode.chatbot.core.base.knowledge.component.KnowledgeComponent;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 
 import java.util.List;
 import java.util.Random;
@@ -23,16 +23,15 @@ public class KnowledgeBrainCell extends AbstractBrainCell {
     }
     
     @Override
-    public BrainResult execute(BrainRequest brainRequest) {
+    public DefaultBrainResult execute(BrainRequest brainRequest) {
         List<String> results = knowledgeComponent.get(brainRequest.getContent());
         if(results == null){
-            return BrainResult.NONE;
+            return DefaultBrainResult.NONE;
         }
 
-        return BrainResult.builder()
+        return DefaultBrainResult.builder()
                 .message(results.get(new Random().nextInt(results.size())))
                 .room(brainRequest.getRoom())
-                .type(BrainResult.DEFAULT_RESULT_TYPE)
                 .build();
     }
 }

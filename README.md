@@ -13,7 +13,6 @@
 - chatbot-spring-boot-slack-starter
 - chatbot-spring-boot-line-starter
 - chatbot-spring-boot-telegram-starter
-- chatbot-spring-boot-teamup-starter
 
 ## Release Notes
 
@@ -178,17 +177,25 @@ dependencies {
 
 ![1_create_app](./img/slack/1_create_app.png)
 
-Bot User를 추가합니다.
+APP TOKEN 을 획득합니다.
 
-![2_add_bot_user](./img/slack/2_add_bot_user.png)
+![2_app_token](./img/slack/2_app_token.png)
 
-Team 에 App 을 설치합니다.
+BOT TOKEN 을 획득합니다.
 
-![3_install_app](./img/slack/3_install_app.png)
+![3_bot_token](./img/slack/3_bot_token.png)
 
-토큰이 발급됩니다.
+BOT TOKEN 의 스코프를 추가합니다.
 
-![4_token](./img/slack/4_token.png)
+![4_scope](./img/slack/4_scope.png)
+
+소켓 모드를 활성화합니다.
+
+![5_on_socket_mode](./img/slack/5_on_socket_mode.png)
+
+이벤트를 구독합니다.
+
+![6_event_subscribe](./img/slack/6_event_subscribe.png)
 
 ### Properties
 
@@ -196,7 +203,8 @@ Team 에 App 을 설치합니다.
 
 ```
 slack:
-  token: xxxxx
+  app-token: xxxxx
+  bot-token: xxxxx
 ```
 
 ## Line Starter
