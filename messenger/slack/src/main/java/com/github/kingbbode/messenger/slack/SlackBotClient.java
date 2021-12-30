@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j
 public class SlackBotClient {
@@ -18,9 +17,10 @@ public class SlackBotClient {
 	}
 
 	public void sendMessage(Message message) {
-		if(Objects.isNull(message)  || StringUtils.isEmpty(message.getChannel())) {
+		if(StringUtils.isEmpty(message.getChannel())) {
 			return;
 		}
+
 		try {
 			methodsClient.chatPostMessage(builder -> builder
 				.channel(message.getChannel())

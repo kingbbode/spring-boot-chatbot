@@ -5,7 +5,7 @@ import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.github.kingbbode.chatbot.core.common.result.SimpleMessageBrainResult;
 import com.github.kingbbode.messenger.slack.event.SlackEvent;
-import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
+import com.github.kingbbode.messenger.slack.result.SlackBlockBrainResult;
 import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,25 +35,26 @@ public class SlackDispatcher implements Dispatcher<SlackEvent>, InitializingBean
     public void onMessage(BrainRequest brainRequest, BrainResult result) {
         if (result instanceof SimpleMessageBrainResult) {
             slackBotClient.sendMessage(Message.builder()
-                .channel(StringUtils.isEmpty(result.getRoom()) ? brainRequest.getRoom() : result.getRoom())
+                .channel(extractChannel(result, brainRequest))
                 .text("<@" + brainRequest.getUser() + ">\n" + ((SimpleMessageBrainResult) result).getMessage())
                 .build()
             );
         }
-        else if (result instanceof SlackMessageBrainResult) {
-            SlackMessageBrainResult slackMessageResult = (SlackMessageBrainResult) result;
+        else if (result instanceof SlackBlockBrainResult) {
             slackBotClient.sendMessage(
                 Message.builder()
-                    .channel(StringUtils.isEmpty(slackMessageResult.getRoom()) ? brainRequest.getRoom() : slackMessageResult.getRoom())
-                    .text(slackMessageResult.getText())
-                    .blocks(slackMessageResult.getBlocks())
-                    .attachments(slackMessageResult.getAttachments())
+                    .channel(extractChannel(result, brainRequest))
+                    .blocks(((SlackBlockBrainResult) result).getBlocks())
                     .build()
             );
         }
         else {
             log.warn("not support result type. {}", result.getClass().getSimpleName());
         }
+    }
+
+    private String extractChannel(BrainResult result, BrainRequest brainRequest) {
+        return StringUtils.isEmpty(result.getRoom()) ? brainRequest.getRoom() : result.getRoom();
     }
 
     @Override

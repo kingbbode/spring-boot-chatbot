@@ -3,7 +3,7 @@ package com.github.kingbbode.chatbot.sample.brain;
 import com.github.kingbbode.chatbot.core.common.annotations.Brain;
 import com.github.kingbbode.chatbot.core.common.annotations.BrainCell;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
+import com.github.kingbbode.messenger.slack.result.SlackBlockBrainResult;
 import com.slack.api.model.block.ActionsBlock;
 import com.slack.api.model.block.SectionBlock;
 import com.slack.api.model.block.composition.MarkdownTextObject;
@@ -72,8 +72,8 @@ public class HelloWorldBrain {
 
 
     @BrainCell(key="슬랙테스트", function = "slack")
-    public SlackMessageBrainResult slack(BrainRequest brainRequest) {
-        return SlackMessageBrainResult.builder()
+    public SlackBlockBrainResult slack(BrainRequest brainRequest) {
+        return SlackBlockBrainResult.builder()
             .room(brainRequest.getRoom())
             .blocks(
                 Arrays.asList(
