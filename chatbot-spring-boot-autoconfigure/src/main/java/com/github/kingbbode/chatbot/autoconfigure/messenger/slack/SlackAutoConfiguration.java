@@ -28,7 +28,7 @@ public class SlackAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public App slackApp(SlackProperties slackProperties, List<BlockActionDispatcherBrain> connectors) {
+    public App slackApp(SlackProperties slackProperties) {
         return new App(AppConfig.builder()
             .singleTeamBotToken(slackProperties.getBotToken())
             .build()
