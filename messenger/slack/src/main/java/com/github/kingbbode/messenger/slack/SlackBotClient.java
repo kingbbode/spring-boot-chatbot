@@ -2,6 +2,7 @@ package com.github.kingbbode.messenger.slack;
 
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -22,11 +23,12 @@ public class SlackBotClient {
 		}
 
 		try {
-			methodsClient.chatPostMessage(builder -> builder
+			methodsClient.chatPostMessage(ChatPostMessageRequest.builder()
 				.channel(message.getChannel())
 				.text(message.getText())
 				.blocks(message.getBlocks())
 				.attachments(message.getAttachments())
+				.build()
 			);
 		} catch (IOException | SlackApiException e) {
 			log.warn("slack chat post failed. {}", e.getMessage());

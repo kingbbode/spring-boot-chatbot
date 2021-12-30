@@ -3,7 +3,7 @@ package com.github.kingbbode.chatbot.sample.config;
 import com.github.kingbbode.chatbot.core.brain.DispatcherBrain;
 import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import com.github.kingbbode.messenger.slack.event.BlockActionDispatcherBrain;
-import com.github.kingbbode.messenger.slack.result.SlackBlockBrainResult;
+import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
 import com.slack.api.model.block.SectionBlock;
 import com.slack.api.model.block.composition.MarkdownTextObject;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +43,7 @@ public class SlackActionConfig {
 
             @Override
             public DispatcherBrain dispatcher() {
-                return brainRequest -> SlackBlockBrainResult.builder()
+                return brainRequest -> SlackMessageBrainResult.builder()
                     .room(brainRequest.getRoom())
                     .blocks(
                         Collections.singletonList(

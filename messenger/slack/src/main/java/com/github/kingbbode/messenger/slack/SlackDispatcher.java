@@ -5,7 +5,7 @@ import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
 import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.github.kingbbode.chatbot.core.common.result.SimpleMessageBrainResult;
 import com.github.kingbbode.messenger.slack.event.SlackEvent;
-import com.github.kingbbode.messenger.slack.result.SlackBlockBrainResult;
+import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
 import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,11 +40,14 @@ public class SlackDispatcher implements Dispatcher<SlackEvent>, InitializingBean
                 .build()
             );
         }
-        else if (result instanceof SlackBlockBrainResult) {
+        else if (result instanceof SlackMessageBrainResult) {
+            SlackMessageBrainResult slackMessageResult = (SlackMessageBrainResult) result;
             slackBotClient.sendMessage(
                 Message.builder()
                     .channel(extractChannel(result, brainRequest))
-                    .blocks(((SlackBlockBrainResult) result).getBlocks())
+                    .text(slackMessageResult.getText())
+                    .blocks(slackMessageResult.getBlocks())
+                    .attachments(slackMessageResult.getAttachments())
                     .build()
             );
         }
