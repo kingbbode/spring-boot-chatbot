@@ -1,13 +1,13 @@
 package com.github.kingbbode.messenger.teamup.enums;
 
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 
 import java.util.Arrays;
 
 public enum ResponseType {
     FEED("feed"),
     OUT("out"),
-    MESSAGE(BrainResult.DEFAULT_RESULT_TYPE),
+    MESSAGE(DefaultBrainResult.DEFAULT_RESULT_TYPE),
     NONE("");
 
     private final String value;

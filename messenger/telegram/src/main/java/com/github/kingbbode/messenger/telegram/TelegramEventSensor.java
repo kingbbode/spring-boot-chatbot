@@ -2,7 +2,7 @@ package com.github.kingbbode.messenger.telegram;
 
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import com.github.kingbbode.chatbot.core.event.Event;
 import com.github.kingbbode.chatbot.core.event.EventQueue;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +65,7 @@ public class TelegramEventSensor extends TelegramLongPollingBot implements Dispa
     }
 
     @Override
-    public void onMessage(BrainRequest brainRequest, BrainResult result) {
+    public void onMessage(BrainRequest brainRequest, DefaultBrainResult result) {
         try {
             sendApiMethod(new SendMessage(result.getRoom(), result.getMessage()));
         } catch (TelegramApiException e) {

@@ -2,7 +2,7 @@ package com.github.kingbbode.messenger.teamup;
 
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import com.github.kingbbode.messenger.teamup.enums.ResponseType;
 import com.github.kingbbode.messenger.teamup.message.MessageService;
 import com.github.kingbbode.messenger.teamup.response.EventResponse;
@@ -36,7 +36,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
     }
 
     @Override
-    public void onMessage(BrainRequest request, BrainResult result) {
+    public void onMessage(BrainRequest request, DefaultBrainResult result) {
         send(result);
     }
 
@@ -60,7 +60,7 @@ public class TeamUpDispatcher implements Dispatcher<EventResponse.Event> {
         return brainRequest;
     }
 
-    private void send(BrainResult result) {
+    private void send(DefaultBrainResult result) {
         switch (ResponseType.resolve(result.type())) {
             case MESSAGE:
                 messageService.sendMessage(result);

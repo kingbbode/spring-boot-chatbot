@@ -2,7 +2,7 @@ package com.github.kingbbode.messenger.slack;
 
 import com.github.kingbbode.chatbot.core.common.interfaces.Dispatcher;
 import com.github.kingbbode.chatbot.core.common.request.BrainRequest;
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import com.slack.api.model.event.MessageEvent;
 import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class SlackDispatcher implements Dispatcher<MessageEvent>, InitializingBe
     }
 
     @Override
-    public void onMessage(BrainRequest brainRequest, BrainResult result) {
+    public void onMessage(BrainRequest brainRequest, DefaultBrainResult result) {
         slackRTMClient.sendMessage(Message.builder()
             .channel(result.getRoom())
             .text("<@" + brainRequest.getUser() + ">\n" + result.getMessage())

@@ -1,6 +1,6 @@
 package com.github.kingbbode.messenger.teamup.message;
 
-import com.github.kingbbode.chatbot.core.common.result.BrainResult;
+import com.github.kingbbode.chatbot.core.common.result.DefaultBrainResult;
 import com.github.kingbbode.messenger.teamup.request.FileRequest;
 import com.github.kingbbode.messenger.teamup.response.EventResponse;
 import com.github.kingbbode.messenger.teamup.response.FileUploadResponse;
@@ -35,19 +35,19 @@ public class MessageService {
         return null;
     }
 
-    public void sendMessage(BrainResult result) {
+    public void sendMessage(DefaultBrainResult result) {
         edgeTemplate.sendMessage(result.getMessage(), result.getRoom());
     }
     
-    public RoomCreateResponse openRoom(BrainResult result) {
+    public RoomCreateResponse openRoom(DefaultBrainResult result) {
         return edgeTemplate.openRoom(result.getMessage());
     }
 
-    public void sendImage(BrainResult result) {
+    public void sendImage(DefaultBrainResult result) {
         edgeTemplate.sendImage(result.getMessage(), result.getRoom());
     }
 
-    public void writeFeed(BrainResult result) {
+    public void writeFeed(DefaultBrainResult result) {
         edgeTemplate.writeFeed(result.getMessage(), result.getRoom());
     }
     
@@ -59,7 +59,7 @@ public class MessageService {
         return fileTemplate.upload(fileRequest, bytes);
     }
     
-    public void outRoom(BrainResult result) {
+    public void outRoom(DefaultBrainResult result) {
         edgeTemplate.sendMessage(result.getMessage(), result.getRoom());
         try {
             Thread.sleep(500);
