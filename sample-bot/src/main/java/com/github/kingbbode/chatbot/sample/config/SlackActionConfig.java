@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 @Configuration
 public class SlackActionConfig {
@@ -19,8 +20,8 @@ public class SlackActionConfig {
         return new BlockActionDispatcherBrain() {
 
             @Override
-            public String getActionId() {
-                return "ACTION1";
+            public Pattern getActionId() {
+                return Pattern.compile("ACTION1*");
             }
 
             @Override
@@ -37,8 +38,8 @@ public class SlackActionConfig {
         return new BlockActionDispatcherBrain() {
 
             @Override
-            public String getActionId() {
-                return "ACTION2";
+            public Pattern getActionId() {
+                return Pattern.compile("ACTION2*");
             }
 
             @Override
