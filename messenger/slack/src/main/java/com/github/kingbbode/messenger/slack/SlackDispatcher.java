@@ -6,7 +6,6 @@ import com.github.kingbbode.chatbot.core.common.result.BrainResult;
 import com.github.kingbbode.chatbot.core.common.result.SimpleMessageBrainResult;
 import com.github.kingbbode.messenger.slack.event.SlackEvent;
 import com.github.kingbbode.messenger.slack.result.SlackMessageBrainResult;
-import com.slack.api.rtm.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,6 +26,7 @@ public class SlackDispatcher implements Dispatcher<SlackEvent>, InitializingBean
             .messageNo(message.getClientMsgId())
             .user(message.getUser())
             .room(message.getChannel())
+            .thread(message.getThead())
             .content(message.getValue())
             .build();
     }
@@ -34,8 +34,9 @@ public class SlackDispatcher implements Dispatcher<SlackEvent>, InitializingBean
     @Override
     public void onMessage(BrainRequest brainRequest, BrainResult result) {
         if (result instanceof SimpleMessageBrainResult) {
-            slackBotClient.sendMessage(Message.builder()
+            slackBotClient.sendMessage(SlackMessage.builder()
                 .channel(extractChannel(result, brainRequest))
+                .threadTs(result.getThread())
                 .text("<@" + brainRequest.getUser() + ">\n" + ((SimpleMessageBrainResult) result).getMessage())
                 .build()
             );
@@ -43,8 +44,9 @@ public class SlackDispatcher implements Dispatcher<SlackEvent>, InitializingBean
         else if (result instanceof SlackMessageBrainResult) {
             SlackMessageBrainResult slackMessageResult = (SlackMessageBrainResult) result;
             slackBotClient.sendMessage(
-                Message.builder()
+                SlackMessage.builder()
                     .channel(extractChannel(result, brainRequest))
+                    .threadTs(result.getThread())
                     .text(slackMessageResult.getText())
                     .blocks(slackMessageResult.getBlocks())
                     .attachments(slackMessageResult.getAttachments())

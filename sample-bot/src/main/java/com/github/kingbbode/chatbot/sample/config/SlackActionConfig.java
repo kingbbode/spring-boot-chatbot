@@ -46,6 +46,7 @@ public class SlackActionConfig {
             public DispatcherBrain dispatcher() {
                 return brainRequest -> SlackMessageBrainResult.builder()
                     .room(brainRequest.getRoom())
+                    .thread(brainRequest.getThread())
                     .blocks(
                         Collections.singletonList(
                             SectionBlock.builder()

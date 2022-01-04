@@ -12,13 +12,15 @@ import java.util.List;
 public class SlackMessageBrainResult implements BrainResult {
 
     private final String room;
+    private final String thread;
     private final String text;
     private final List<LayoutBlock> blocks;
     private final List<Attachment> attachments;
 
     @Builder
-    public SlackMessageBrainResult(String room, String text, List<LayoutBlock> blocks, List<Attachment> attachments) {
+    public SlackMessageBrainResult(String room, String thread, String text, List<LayoutBlock> blocks, List<Attachment> attachments) {
         this.room = room;
+        this.thread = thread;
         this.text = text;
         this.blocks = blocks;
         this.attachments = attachments;

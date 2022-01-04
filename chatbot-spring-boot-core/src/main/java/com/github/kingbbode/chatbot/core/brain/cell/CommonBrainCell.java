@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  */
 public class CommonBrainCell extends AbstractBrainCell {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private String name;
     private Method active;
     private Object object;
@@ -41,44 +41,53 @@ public class CommonBrainCell extends AbstractBrainCell {
     @Override
     public BrainResult execute(BrainRequest brainRequest) {
         if (!inject()) {
-            return DefaultBrainResult.Builder.FAILED.room(brainRequest.getRoom()).build();
+            return DefaultBrainResult.Builder.FAILED
+                .room(brainRequest.getRoom())
+                .thread(brainRequest.getThread())
+                .build();
         }
         Object result;
         try {
             result = active.invoke(object, brainRequest);
-        }catch(Throwable e){
-            if(e.getCause() instanceof BrainException){
+        } catch (Throwable e) {
+            if (e.getCause() instanceof BrainException) {
                 return DefaultBrainResult.builder()
-                        .message(e.getCause().getMessage())
-                        .room(brainRequest.getRoom())
-                        .build();
-            }else if(e.getCause() instanceof ArgumentInvalidException){
+                    .message(e.getCause().getMessage())
+                    .room(brainRequest.getRoom())
+                    .thread(brainRequest.getThread())
+                    .build();
+            } else if (e.getCause() instanceof ArgumentInvalidException) {
                 return DefaultBrainResult.builder()
-                        .message(active.getAnnotation(BrainCell.class).example())
-                        .room(brainRequest.getRoom())
-                        .build();
-            }else if(e.getCause() instanceof InvalidReturnTypeException){
+                    .message(active.getAnnotation(BrainCell.class).example())
+                    .room(brainRequest.getRoom())
+                    .thread(brainRequest.getThread())
+                    .build();
+            } else if (e.getCause() instanceof InvalidReturnTypeException) {
                 return DefaultBrainResult.builder()
-                        .message("Method Return Type Exception!")
-                        .room(brainRequest.getRoom())
-                        .build();
+                    .message("Method Return Type Exception!")
+                    .room(brainRequest.getRoom())
+                    .thread(brainRequest.getThread())
+                    .build();
             }
             return DefaultBrainResult.builder()
-                    .message("Server Error : " + e.getMessage())
-                    .room(brainRequest.getRoom())
-                    .build();
+                .message("Server Error : " + e.getMessage())
+                .room(brainRequest.getRoom())
+                .thread(brainRequest.getThread())
+                .build();
         }
-        if(result instanceof String) {
+        if (result instanceof String) {
             return DefaultBrainResult.builder()
-                    .message((String) result)
-                    .room(brainRequest.getRoom())
-                    .build();
-        } else if(result instanceof BrainResult) {
+                .message((String) result)
+                .room(brainRequest.getRoom())
+                .thread(brainRequest.getThread())
+                .build();
+        } else if (result instanceof BrainResult) {
             return (BrainResult) result;
         }
 
         return DefaultBrainResult.builder()
             .room(brainRequest.getRoom())
+            .thread(brainRequest.getThread())
             .message("Not Support Result Type.")
             .build();
     }

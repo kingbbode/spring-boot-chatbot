@@ -7,15 +7,22 @@ public class DefaultBrainResult extends SimpleMessageBrainResult {
     public static DefaultBrainResult NONE = builder().build();
 
     private final String room;
+    private final String thread;
 
     public DefaultBrainResult(Builder builder) {
         this.message = builder.message;
         this.room = builder.room;
+        this.thread = builder.thread;
     }
 
     @Override
     public String getRoom() {
         return room;
+    }
+
+    @Override
+    public String getThread() {
+        return thread;
     }
 
     public static Builder builder() {
@@ -25,6 +32,7 @@ public class DefaultBrainResult extends SimpleMessageBrainResult {
     public static class Builder {
         private String message;
         private String room;
+        private String thread;
 
         public Builder message(String message){
             this.message = message;
@@ -33,6 +41,11 @@ public class DefaultBrainResult extends SimpleMessageBrainResult {
 
         public Builder room(String room){
             this.room = room;
+            return this;
+        }
+
+        public Builder thread(String thread){
+            this.thread = thread;
             return this;
         }
 

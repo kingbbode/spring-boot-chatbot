@@ -59,6 +59,7 @@ public class DefaultDispatcherBrain implements DispatcherBrain {
                     return DefaultBrainResult.builder()
                             .message("취소되었습니다.")
                             .room(brainRequest.getRoom())
+                            .thread(brainRequest.getThread())
                             .build();
                 }
             };
@@ -69,6 +70,7 @@ public class DefaultDispatcherBrain implements DispatcherBrain {
                 return DefaultBrainResult.builder()
                         .message(info.example())
                         .room(brainRequest.getRoom())
+                        .thread(brainRequest.getThread())
                         .build();
             }
         };

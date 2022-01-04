@@ -32,6 +32,7 @@ public class KnowledgeBrainCell extends AbstractBrainCell {
         return DefaultBrainResult.builder()
                 .message(results.get(new Random().nextInt(results.size())))
                 .room(brainRequest.getRoom())
+                .thread(brainRequest.getThread())
                 .build();
     }
 }

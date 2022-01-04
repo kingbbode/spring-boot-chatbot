@@ -5,7 +5,6 @@ import com.github.kingbbode.chatbot.core.conversation.Conversation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.util.StringUtils;
 
 /**
  * Created by YG on 2017-01-23.
@@ -17,27 +16,27 @@ public class BrainRequest {
     private String messageNo;
     private String user;
     private String room;
+    private String thread;
     private String content;
     private Conversation conversation;
 
     @Builder
-    public BrainRequest(String messenger, String messageNo, String user, String room, String content) {
+    public BrainRequest(String messenger, String messageNo, String user, String room, String thread, String content) {
         this.messenger = messenger;
         this.messageNo = messageNo;
         this.user = user;
         this.room = room;
+        this.thread = thread;
         this.content = content;
-    }
-
-    public boolean isValid(){
-        return !StringUtils.isEmpty(content);
     }
 
     @Override
     public String toString() {
         return "messenger=" + messenger + "\n" +
-            ", messageNo=" + messageNo + "\n" +
-            ", user=" + user + "\n" +
-            ", room=" + room;
+            "messageNo=" + messageNo + "\n" +
+            "user=" + user + "\n" +
+            "room=" + room + "\n" +
+            "thread=" + thread + "\n" +
+            "content=" + content + "\n";
     }
 }

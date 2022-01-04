@@ -55,6 +55,7 @@ public class SlackEventSensor implements InitializingBean, BoltEventHandler<Mess
             .clientMsgId(event.getClientMsgId())
             .user(event.getUser())
             .channel(event.getChannel())
+            .thead(StringUtils.hasText(event.getThreadTs()) ? event.getThreadTs() : event.getTs())
             .value(event.getText())
             .build();
 
@@ -79,6 +80,7 @@ public class SlackEventSensor implements InitializingBean, BoltEventHandler<Mess
                     .clientMsgId(blockActionRequest.getPayload().getTriggerId())
                     .user(blockActionRequest.getPayload().getUser().getId())
                     .channel(blockActionRequest.getPayload().getChannel().getId())
+                    .thead(StringUtils.hasText(blockActionRequest.getPayload().getMessage().getThreadTs()) ? blockActionRequest.getPayload().getMessage().getThreadTs() : blockActionRequest.getPayload().getMessage().getTs())
                     .value(action.getValue())
                     .build();
                 this.eventQueue.offer(new Event<>(slackDispatcher, slackEvent, connector.dispatcher()));
